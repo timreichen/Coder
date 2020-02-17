@@ -1,6 +1,6 @@
 # Coder
 
-Encode and decode data and retan data types.
+Encode and decode data and retain data types.
 
 ## Why do I need Coder?
 
