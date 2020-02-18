@@ -16,8 +16,8 @@ JSON is great, except it doesn't support a lot of types. In comparison Coder sup
   const string = JSON.stringify(date) // "2020-02-13T13:16:43.096Z"
   JSON.parse(string) // SyntaxError
 
-  const buffer = encoder.encode(date)
-  decoder.decode(buffer) // Date
+  const buffer = coder.encode(date)
+  coder.decode(buffer) // Date
 ```
 
 ### But there is messagepack and protocol buffers, right?
