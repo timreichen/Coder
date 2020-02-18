@@ -1,6 +1,4 @@
-import { Encoder } from "./Encoder.ts"
-import { Decoder } from "./Decoder.ts"
-import { DataType, MultiDataType } from "./DataType.ts"
+import { Coder } from "./Coder.ts"
 
 import { NullDataType } from "./datatypes/null.ts"
 import { UndefinedDataType } from "./datatypes/undefined.ts"
@@ -16,10 +14,8 @@ import { ArrayBuffer8DataType, ArrayBuffer16DataType, ArrayBuffer32DataType } fr
 import { BigIntDataType } from "./datatypes/BigInt.ts"
 import { RegExpDataType } from "./datatypes/RegExp.ts"
 import { InfinitydDataType } from "./datatypes/Infinity.ts"
-import { NegativeInfinitydDataType } from "./datatypes/NegativeInfinity.ts"
-
-export const encoder = new Encoder()
-export const decoder = new Decoder()
+import { Set16DataType, Set32DataType, Set8DataType } from "./datatypes/Set.ts"
+import { Map16DataType, Map32DataType, Map8DataType } from "./datatypes/Map.ts"
 
 const dataTypes = [
   new FixedUintDataType([
@@ -44,8 +40,7 @@ const dataTypes = [
   new DateDataType(0x84),
   new RegExpDataType(0x88),
 
-  new InfinitydDataType(0x8e),
-  new NegativeInfinitydDataType(0x8f),
+  new InfinitydDataType([0x8e, 0x8f]),
 
   new FixedStringDataType([
     0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9e, 0x9f,
@@ -94,9 +89,20 @@ const dataTypes = [
   new Array32DataType(0xce),
   // new Array64DataType(0xcf),
 
+  new Map8DataType(0xe0),
+  new Map16DataType(0xe1),
+  new Map32DataType(0xe2),
+  // new Map64DataType(0xe3),
+
+  new Set8DataType(0xe8),
+  new Set16DataType(0xe9),
+  new Set32DataType(0xea),
+  // new Set64DataType(0xeb),
+  
 ]
 
-dataTypes.forEach(dataType => {
-  encoder.register(dataType)
-  decoder.register(dataType)
-})
+export { Encoder } from "./Encoder.ts"
+export { Decoder } from "./Decoder.ts"
+
+export const coder = new Coder()
+coder.register(...dataTypes)
