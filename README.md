@@ -16,8 +16,6 @@ JSON is great, except it doesn't support a lot of types. In comparison Coder sup
   const string = JSON.stringify(date) // "2020-02-13T13:16:43.096Z"
   JSON.parse(string) // SyntaxError
 
-  const buffer = coder.encode(date)
-  coder.decode(buffer) // Date
 ```
 
 ### But there is messagepack and protocol buffers, right?
@@ -27,10 +25,10 @@ Yes, and this project is inspired by messagepack. It encodes data types similarl
 ```typescript
 import { coder } from "https://raw.githubusercontent.com/timreichen/Coder/master/mod.ts"
 
-const data = { hello: "hello world" }
+const date = new Date()
 const buffer = coder.encode(data)
 const encodedData = coder.decode(buffer)
-console.log(encodedData) // { hello: "world" }
+console.log(encodedData) // Date
 ```
 
 ## Supported types
