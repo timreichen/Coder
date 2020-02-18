@@ -76,10 +76,7 @@ DataTypes are declared by extending the DataType class.
 ### Define Custom DataType
 
 ```typescript
-import { DataType, Encoder.combineBuffers } from "../DataType.ts"
-
-import { Encoder } from "../Encoder.ts"
-import { Decoder } from "../Decoder.ts"
+import { DataType, Encoder, Decoder } from "https://raw.githubusercontent.com/timreichen/Coder/master/mod.ts"
 
 export class ErrorDataType extends DataType {
 
@@ -93,8 +90,8 @@ export class ErrorDataType extends DataType {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     const message = data.message // get data to encode
     const dataBuffer = Encoder.stringToBuffer(message) // convert message to buffer
-    const length = databuffer.byteLength // get length of dataBuffer
-    const lengthBuffer = Encoder.uInt8ToBuffer(byteLength) // convert length to buffer
+    const length = dataBuffer.byteLength // get length of dataBuffer
+    const lengthBuffer = Encoder.uInt8ToBuffer(length) // convert length to buffer
     return Encoder.combineBuffers(idBuffer, lengthBuffer, dataBuffer) // create a buffer where the first byte must be the type id byte
   }
   
@@ -125,10 +122,10 @@ coder.register(errorDataType)
 #### Use Custom DataType
 ```typescript
 
-const data = new Error("Something went wrong")
+const data = { error: new Error("Something went wrong") }
 const buffer = coder.encode(data)
 const encodedData = coder.decoder(buffer)
-console.log(encodedData) // Error: Something went wrong
+console.log(encodedData) // { error: Error: Something went wrong }
 
 ```
 
