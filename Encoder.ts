@@ -8,7 +8,11 @@ export class Encoder {
   }
 
   register(dataType: DataType | MultiDataType) {
-    this.dataTypes.set(dataType.id, dataType)
+    const id = dataType.id
+    if (this.dataTypes.has(id)) {
+      return console.warn(`type for id ${id} is already defined`)
+    }
+    this.dataTypes.set(id, dataType)
   }
 
   encode(data: any): ArrayBuffer {

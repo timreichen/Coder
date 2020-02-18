@@ -12,12 +12,20 @@ export class Decoder {
     this.length = 0
     this.dataTypes = new Map()
   }
-
   register(dataType: DataType | MultiDataType) {
     if (dataType instanceof MultiDataType) {
-      dataType.id.forEach(id => this.dataTypes.set(id, dataType))
+      dataType.id.forEach(id => {
+        if (this.dataTypes.has(id)) {
+          return console.warn(`type for id ${id} is already defined`)
+        }
+        this.dataTypes.set(id, dataType)
+      })
     } else {
-      this.dataTypes.set(dataType.id, dataType)
+      const id = dataType.id
+      if (this.dataTypes.has(id)) {
+        return console.warn(`type for id ${id} is already defined`)
+      }
+      this.dataTypes.set(id, dataType)
     }
   }
 
