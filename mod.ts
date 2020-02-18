@@ -1,5 +1,3 @@
-import { Coder } from "./Coder.ts"
-
 import { NullDataType } from "./datatypes/null.ts"
 import { UndefinedDataType } from "./datatypes/undefined.ts"
 import { FalseDataType, TrueDataType } from "./datatypes/Boolean.ts"
@@ -17,11 +15,14 @@ import { InfinitydDataType } from "./datatypes/Infinity.ts"
 import { Set16DataType, Set32DataType, Set8DataType } from "./datatypes/Set.ts"
 import { Map16DataType, Map32DataType, Map8DataType } from "./datatypes/Map.ts"
 
+
 export { DataType, MultiDataType } from "./DataType.ts"
+import { Coder } from "./Coder.ts"
 export { Encoder } from "./Encoder.ts"
 export { Decoder } from "./Decoder.ts"
 
 export const coder = new Coder()
+export { Coder }
 
 const dataTypes = [
   new FixedUintDataType([
