@@ -1,4 +1,4 @@
-import { DataType, appendBuffer } from "../DataType.ts"
+import { DataType } from "../DataType.ts"
 import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
@@ -12,12 +12,12 @@ export class Map8DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt8ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(length))
     for (const [key, value] of data.entries()) {
       const keyBuffer = encoder.encode(key)
       const valueBuffer = encoder.encode(value)
-      buffer = appendBuffer(buffer, keyBuffer)
-      buffer = appendBuffer(buffer, valueBuffer)
+      buffer = Encoder.combineBuffers(buffer, keyBuffer)
+      buffer = Encoder.combineBuffers(buffer, valueBuffer)
     }
 
     return buffer
@@ -41,12 +41,12 @@ export class Map16DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt16ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length))
     for (const [key, value] of data.entries()) {
       const keyBuffer = encoder.encode(key)
       const valueBuffer = encoder.encode(value)
-      buffer = appendBuffer(buffer, keyBuffer)
-      buffer = appendBuffer(buffer, valueBuffer)
+      buffer = Encoder.combineBuffers(buffer, keyBuffer)
+      buffer = Encoder.combineBuffers(buffer, valueBuffer)
     }
 
     return buffer
@@ -70,12 +70,12 @@ export class Map32DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt32ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length))
     for (const [key, value] of data.entries()) {
       const keyBuffer = encoder.encode(key)
       const valueBuffer = encoder.encode(value)
-      buffer = appendBuffer(buffer, keyBuffer)
-      buffer = appendBuffer(buffer, valueBuffer)
+      buffer = Encoder.combineBuffers(buffer, keyBuffer)
+      buffer = Encoder.combineBuffers(buffer, valueBuffer)
     }
 
     return buffer

@@ -1,4 +1,4 @@
-import { DataType, appendBuffer, MultiDataType } from "../DataType.ts"
+import { DataType, MultiDataType } from "../DataType.ts"
 import { UINT_8_MAX_VALUE, UINT_16_MAX_VALUE, UINT_64_MAX_VALUE, UINT_32_MAX_VALUE } from "../checks/numbercheck.ts"
 import { isType } from "../checks/typecheck.ts"
 import { Encoder } from "../Encoder.ts"
@@ -13,7 +13,7 @@ export class BigIntDataType extends DataType {
     const dataBuffer = Encoder.stringToBuffer(dataString)
     const length = dataBuffer.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt32ToBuffer(length), dataBuffer)
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length), dataBuffer)
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)

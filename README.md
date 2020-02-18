@@ -76,31 +76,34 @@ DataTypes are declared by extending the DataType class.
 ### Define Custom DataType
 
 ```typescript
-import { appendBuffer } from "../DataType.ts"
+import { DataType, Encoder.combineBuffers } from "../DataType.ts"
 
 import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
-export class DateDataType extends DataType {
+export class ErrorDataType extends DataType {
 
   // The validate method returns true if data should be decoded for that type.
   validate(data) {
-    return data instanceof Error
+    return data instanceof Error && data.message.length <= 255 // limit message length to 255
   }
   
   // The encode method transforms the data into a buffer, where the first byte must be the type of the DataType.
   encode(encoder: Encoder, data: Error) {
-    const message = data.message
-    const dataBuffer = Encoder.stringToBuffer(message) // convert number to buffer 
-    return appendBuffer(Encoder.uInt8ToBuffer(this.id), dataBuffer) // create a buffer with id byte append the databuffer
+    const idBuffer = Encoder.uInt8ToBuffer(this.id)
+    const message = data.message // get data to encode
+    const dataBuffer = Encoder.stringToBuffer(message) // convert message to buffer
+    const length = databuffer.byteLength // get length of dataBuffer
+    const lengthBuffer = Encoder.uInt8ToBuffer(byteLength) // convert length to buffer
+    return Encoder.combineBuffers(idBuffer, lengthBuffer, dataBuffer) // create a buffer where the first byte must be the type id byte
   }
   
   // The decode method transforms the buffer back to a value.
   decode(decoder: Decoder) {
     decoder.stepBytes(1) // step over the id byte
-    const dataBuffer = decoder.stepUint64() // get databuffer
-    const time = Number(dataBuffer) // convert databuffer to number
-    return new Date(time) // create date from number
+    const length = decoder.stepUint8() // get length
+    const message = decoder.stepString(length) // get message
+    return new Error(message) // create error with message
   }
 }
 

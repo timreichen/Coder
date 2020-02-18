@@ -20,6 +20,18 @@ export class Encoder {
     throw Error(`data ${data} is not supported`)
   }
 
+  static combineBuffers(...buffers: ArrayBuffer[]): ArrayBuffer {
+    const length = buffers.reduce((length, buffer) => length += buffer.byteLength, 0)
+    const newBuffer = new Uint8Array(length)
+    let offset = 0
+    for (const buffer of buffers) {
+      newBuffer.set(new Uint8Array(buffer), offset)
+      offset += buffer.byteLength
+    }
+    return newBuffer.buffer
+  }
+  
+
   static int8ToBuffer(number: number) {
     const buffer = new ArrayBuffer(1)
     const view = new DataView(buffer)

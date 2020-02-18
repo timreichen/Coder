@@ -1,4 +1,4 @@
-import { DataType, appendBuffer } from "../DataType.ts"
+import { DataType } from "../DataType.ts"
 import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
@@ -15,7 +15,7 @@ export class DateDataType extends DataType {
     const time = data.getTime()
     const dataBuffer = Encoder.uInt64ToBuffer(time)
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, dataBuffer)
+    return Encoder.combineBuffers(idBuffer, dataBuffer)
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)

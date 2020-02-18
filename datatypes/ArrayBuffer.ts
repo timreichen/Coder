@@ -1,4 +1,4 @@
-import { DataType, appendBuffer } from "../DataType.ts"
+import { DataType } from "../DataType.ts"
 import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
@@ -13,7 +13,7 @@ export class ArrayBuffer8DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt8ToBuffer(length), data)
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(length), data)
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
@@ -29,7 +29,7 @@ export class ArrayBuffer16DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt16ToBuffer(length), data)
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length), data)
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
@@ -45,7 +45,7 @@ export class ArrayBuffer32DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt32ToBuffer(length), data)
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length), data)
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)

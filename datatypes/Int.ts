@@ -1,4 +1,4 @@
-import { DataType, appendBuffer, MultiDataType } from "../DataType.ts"
+import { DataType, MultiDataType } from "../DataType.ts"
 import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
@@ -11,7 +11,7 @@ export class FixedIntDataType extends MultiDataType {
   }
   encode(encoder: Encoder, data) {
     const index = (-data)-1
-    return appendBuffer(Encoder.int8ToBuffer(this.id[index]))
+    return Encoder.combineBuffers(Encoder.int8ToBuffer(this.id[index]))
   }
   decode(decoder: Decoder) {
     const id = decoder.stepUint8()
@@ -28,7 +28,7 @@ export class Int8DataType extends DataType {
 
   encode(encoder: Encoder, data) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.int8ToBuffer(data))
+    return Encoder.combineBuffers(idBuffer, Encoder.int8ToBuffer(data))
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
@@ -43,7 +43,7 @@ export class Int16DataType extends DataType {
 
   encode(encoder: Encoder, data) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.int16ToBuffer(data))
+    return Encoder.combineBuffers(idBuffer, Encoder.int16ToBuffer(data))
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
@@ -58,7 +58,7 @@ export class Int32DataType extends DataType {
 
   encode(encoder: Encoder, data) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.int32ToBuffer(data))
+    return Encoder.combineBuffers(idBuffer, Encoder.int32ToBuffer(data))
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)

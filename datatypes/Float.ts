@@ -1,4 +1,4 @@
-import { DataType, appendBuffer } from "../DataType.ts"
+import { DataType } from "../DataType.ts"
 import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
@@ -11,7 +11,7 @@ export class Float32DataType extends DataType {
   }
   encode(encoder: Encoder, data) {    
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.float32ToBuffer(data))
+    return Encoder.combineBuffers(idBuffer, Encoder.float32ToBuffer(data))
   }
   decode(decoder) {
     decoder.stepBytes(1)
@@ -24,7 +24,7 @@ export class Float64DataType extends DataType {
   }
   encode(encoder: Encoder, data) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.float64ToBuffer(data))
+    return Encoder.combineBuffers(idBuffer, Encoder.float64ToBuffer(data))
   }
   decode(decoder) {
     decoder.stepBytes(1)

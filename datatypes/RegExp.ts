@@ -1,4 +1,4 @@
-import { DataType, appendBuffer } from "../DataType.ts"
+import { DataType } from "../DataType.ts"
 
 import { isType } from "../checks/typecheck.ts"
 import { Encoder } from "../Encoder.ts"
@@ -15,7 +15,7 @@ export class RegExpDataType extends DataType {
     const dataBuffer = Encoder.stringToBuffer(string)
     const length = dataBuffer.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt16ToBuffer(length), dataBuffer)
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length), dataBuffer)
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)

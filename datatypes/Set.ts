@@ -1,4 +1,4 @@
-import { DataType, appendBuffer } from "../DataType.ts"
+import { DataType } from "../DataType.ts"
 import { UINT_16_MAX_VALUE, UINT_32_MAX_VALUE, UINT_8_MAX_VALUE } from "../checks/numbercheck.ts"
 
 import { isType } from "../checks/typecheck.ts"
@@ -12,10 +12,10 @@ export class Set8DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt8ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(length))
     for (const value of data.values()) {
       const valueBuffer = encoder.encode(value)
-      buffer = appendBuffer(buffer, valueBuffer)
+      buffer = Encoder.combineBuffers(buffer, valueBuffer)
     }
 
     return buffer
@@ -39,10 +39,10 @@ export class Set16DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt16ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length))
     for (const value of data.values()) {
       const valueBuffer = encoder.encode(value)
-      buffer = appendBuffer(buffer, valueBuffer)
+      buffer = Encoder.combineBuffers(buffer, valueBuffer)
     }
 
     return buffer
@@ -65,10 +65,10 @@ export class Set32DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt32ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length))
     for (const value of data.values()) {
       const valueBuffer = encoder.encode(value)
-      buffer = appendBuffer(buffer, valueBuffer)
+      buffer = Encoder.combineBuffers(buffer, valueBuffer)
     }
     return buffer
   }

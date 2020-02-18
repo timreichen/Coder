@@ -1,4 +1,4 @@
-import { DataType, appendBuffer, MultiDataType } from "../DataType.ts"
+import { DataType, MultiDataType } from "../DataType.ts"
 import { UINT_16_MAX_VALUE, UINT_32_MAX_VALUE, UINT_8_MAX_VALUE } from "../checks/numbercheck.ts"
 
 import { isType } from "../checks/typecheck.ts"
@@ -14,12 +14,12 @@ export class FixedObjectDataType extends MultiDataType {
     const length = Object.keys(data).length
     const id = this.id[length]
     const idBuffer = Encoder.uInt8ToBuffer(id)
-    let buffer = appendBuffer(idBuffer)
+    let buffer = Encoder.combineBuffers(idBuffer)
     for (const [key, value] of Object.entries(data)) {
       const keyBuffer = encoder.encode(key)
       const valueBuffer = encoder.encode(value)
-      buffer = appendBuffer(buffer, keyBuffer)
-      buffer = appendBuffer(buffer, valueBuffer)
+      buffer = Encoder.combineBuffers(buffer, keyBuffer)
+      buffer = Encoder.combineBuffers(buffer, valueBuffer)
     }
 
     return buffer
@@ -44,11 +44,11 @@ export class Object8DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = Object.keys(data).length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt8ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(length))
     for (const [key, value] of Object.entries(data)) {
       const keyBuffer = encoder.encode(key)
       const valueBuffer = encoder.encode(value)
-      buffer = appendBuffer(buffer, keyBuffer, valueBuffer)
+      buffer = Encoder.combineBuffers(buffer, keyBuffer, valueBuffer)
     }
 
     return buffer
@@ -72,11 +72,11 @@ export class Object16DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = Object.keys(data).length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt16ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length))
     for (const [key, value] of Object.entries(data)) {
       const keyBuffer = encoder.encode(key)
       const valueBuffer = encoder.encode(value)
-      buffer = appendBuffer(buffer, keyBuffer, valueBuffer)
+      buffer = Encoder.combineBuffers(buffer, keyBuffer, valueBuffer)
     }
 
     return buffer
@@ -100,11 +100,11 @@ export class Object32DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = Object.keys(data).length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt32ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length))
     for (const [key, value] of Object.entries(data)) {
       const keyBuffer = encoder.encode(key)
       const valueBuffer = encoder.encode(value)
-      buffer = appendBuffer(buffer, keyBuffer, valueBuffer)
+      buffer = Encoder.combineBuffers(buffer, keyBuffer, valueBuffer)
     }
 
     return buffer

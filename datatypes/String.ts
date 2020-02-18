@@ -1,4 +1,4 @@
-import { DataType, appendBuffer, MultiDataType } from "../DataType.ts"
+import { DataType, MultiDataType } from "../DataType.ts"
 import { UINT_8_MAX_VALUE, UINT_16_MAX_VALUE, UINT_64_MAX_VALUE, UINT_32_MAX_VALUE } from "../checks/numbercheck.ts"
 import { isType } from "../checks/typecheck.ts"
 import { Encoder } from "../Encoder.ts"
@@ -13,7 +13,7 @@ export class FixedStringDataType extends MultiDataType {
     const length = dataBuffer.byteLength
     const id = this.id[length]
     const idBuffer = Encoder.uInt8ToBuffer(id)
-    return appendBuffer(idBuffer, dataBuffer)
+    return Encoder.combineBuffers(idBuffer, dataBuffer)
   }
   decode(decoder: Decoder) {
     const id = decoder.stepUint8()
@@ -33,7 +33,7 @@ export class String8DataType extends DataType {
     const dataBuffer = Encoder.stringToBuffer(data)
     const byteLength = dataBuffer.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt8ToBuffer(byteLength), dataBuffer)
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(byteLength), dataBuffer)
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
@@ -53,7 +53,7 @@ export class String16DataType extends DataType {
     const dataBuffer = Encoder.stringToBuffer(data)
     const byteLength = dataBuffer.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt16ToBuffer(byteLength), dataBuffer)
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(byteLength), dataBuffer)
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
@@ -69,7 +69,7 @@ export class String32DataType extends DataType {
     const dataBuffer = Encoder.stringToBuffer(data)
     const byteLength = dataBuffer.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt32ToBuffer(byteLength), dataBuffer)
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(byteLength), dataBuffer)
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)

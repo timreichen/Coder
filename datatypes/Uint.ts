@@ -1,4 +1,4 @@
-import { DataType, appendBuffer, MultiDataType } from "../DataType.ts"
+import { DataType, MultiDataType } from "../DataType.ts"
 import { range, UINT_8_MIN_VALUE, UINT_8_MAX_VALUE, UINT_16_MIN_VALUE, UINT_16_MAX_VALUE, UINT_32_MIN_VALUE, UINT_32_MAX_VALUE, UINT_64_MIN_VALUE, UINT_64_MAX_VALUE } from "../checks/numbercheck.ts"
 
 
@@ -28,7 +28,7 @@ export class Uint8DataType extends DataType {
 
   encode(encoder: Encoder, data) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt8ToBuffer(data))
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(data))
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
@@ -43,7 +43,7 @@ export class Uint16DataType extends DataType {
 
   encode(encoder: Encoder, data) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt16ToBuffer(data))
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(data))
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
@@ -58,7 +58,7 @@ export class Uint32DataType extends DataType {
 
   encode(encoder: Encoder, data) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    return appendBuffer(idBuffer, Encoder.uInt32ToBuffer(data))
+    return Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(data))
   }
   decode(decoder: Decoder) {
     decoder.stepBytes(1)

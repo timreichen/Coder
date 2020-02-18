@@ -1,4 +1,4 @@
-import { DataType, appendBuffer, MultiDataType } from "../DataType.ts"
+import { DataType, MultiDataType } from "../DataType.ts"
 import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
@@ -12,10 +12,10 @@ export class FixedArrayDataType extends MultiDataType {
   encode(encoder: Encoder, data) {
     const length = data.length
     const id = this.id[length]
-    let buffer = appendBuffer(Encoder.uInt8ToBuffer(id))
+    let buffer = Encoder.combineBuffers(Encoder.uInt8ToBuffer(id))
     for (const item of data) {
       const itemBuffer = encoder.encode(item)
-      buffer = appendBuffer(buffer, itemBuffer)
+      buffer = Encoder.combineBuffers(buffer, itemBuffer)
     }
     return buffer
   }
@@ -38,10 +38,10 @@ export class Array8DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt8ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(length))
     for (const item of data) {
       const itemBuffer = encoder.encode(item)
-      buffer = appendBuffer(buffer, itemBuffer)
+      buffer = Encoder.combineBuffers(buffer, itemBuffer)
     }
 
     return buffer
@@ -65,10 +65,10 @@ export class Array16DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt16ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length))
     for (const item of data) {
       const itemBuffer = encoder.encode(item)
-      buffer = appendBuffer(buffer, itemBuffer)
+      buffer = Encoder.combineBuffers(buffer, itemBuffer)
     }
 
     return buffer
@@ -91,10 +91,10 @@ export class Array32DataType extends DataType {
   encode(encoder: Encoder, data) {
     const length = data.length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
-    let buffer = appendBuffer(idBuffer, Encoder.uInt32ToBuffer(length))
+    let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length))
     for (const item of data) {
       const itemBuffer = encoder.encode(item)
-      buffer = appendBuffer(buffer, itemBuffer)
+      buffer = Encoder.combineBuffers(buffer, itemBuffer)
     }
     return buffer
   }
