@@ -25,49 +25,59 @@ Yes, and this project is inspired by messagepack. It encodes data types similarl
 
 ## Usage
 ```typescript
-import { encoder, decoder } from "https://raw.githubusercontent.com/timreichen/Coder/master/mod.ts"
+import { coder } from "https://raw.githubusercontent.com/timreichen/Coder/master/mod.ts"
 
-const data = { hello: "world" }
-const buffer = ecoder.encode(data)
-const encodedData = decoder.decoder(buffer)
-consoel.log(encodedData) // { hello: "world" }
+const data = { hello: "hello world" }
+const buffer = coder.encode(data)
+const encodedData = coder.decode(buffer)
+console.log(encodedData) // { hello: "world" }
 ```
-
 
 ## Supported types
 
 It supports lots of types out of the box:
 
-#### Primitives
 * [null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null)
 * [undefined](https://developer.mozilla.org/en-US/docs/Glossary/undefined)
 * [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
 * [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) (Integer and Float)
-* [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)
 * [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)
 
-#### Objects
+  <br>
+
+* [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)
+* [Infinity and -Infinity](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity)
+
+  <br>
+
 * [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
 * [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+
+  <br>
+
 * [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
 * [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+
+  <br>
+
 * [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
-* [WeakSet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet)
 * [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
-* [WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
 
- <!-- #### Experimental -->
+**Info**: It needs to be discussed what additional types should be supported by default.
+Some possible candidates are:
+* [Symbol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol)
+* [NaN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN)
+* [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
 
-## How does it work?
-
-#### DataType Definition
-
+### Custom DataType Definition
+If you want to encode and decode a custom DataType (for example [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)) it  is easy to do so.
 DataTypes are declared by extending the DataType class.
 
-```typescript
-import { DataType, appendBuffer } from "../DataType.ts"
+### Define Custom DataType
 
-import { isDate } from "../checks/typecheck.ts"
+```typescript
+import { appendBuffer } from "../DataType.ts"
+
 import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
@@ -75,13 +85,13 @@ export class DateDataType extends DataType {
 
   // The validate method returns true if data should be decoded for that type.
   validate(data) {
-    return isType(data, Date) // make datatype valid if data is a date
+    return data instanceof Error
   }
   
   // The encode method transforms the data into a buffer, where the first byte must be the type of the DataType.
-  encode(encoder: Encoder, data) {
-    const time = data.getTime() // convert date to number
-    const dataBuffer = Encoder.uInt64ToBuffer(time) // convert number to buffer 
+  encode(encoder: Encoder, data: Error) {
+    const message = data.message
+    const dataBuffer = Encoder.stringToBuffer(message) // convert number to buffer 
     return appendBuffer(Encoder.uInt8ToBuffer(this.id), dataBuffer) // create a buffer with id byte append the databuffer
   }
   
@@ -96,23 +106,26 @@ export class DateDataType extends DataType {
 
 ```
 
-#### Import
+#### Register Custom DataType
 ```typescript
-import { Encoder } from "../Encoder.ts"
-import { Decoder } from "../Decoder.ts"
+import { coder } from "https://raw.githubusercontent.com/timreichen/Coder/master/mod.ts"
+import { ErrorDataType } from "./path/to/ErrorDataType.ts"
 
-import { DateDataType } from "../DateDataType"
+// Create a new instance of the defined DataType. It must be passed a valid type id. Custom types use bytes from 0xf0 to 0xff.
+const errorDataType = new DateDataType(0xf0)
 
-// Create a new instance of the defined DataType. It must be passed a valid id. Custom types use bytes from 0xf0 to 0xff.
-const dateDataType = new DateDataType(0xa0)
+// Register the DataType
+coder.register(errorDataType)
 
-// Create new instanced of the Encoder and Decoder.
-export const encoder = new Encoder()
-export const decoder = new Decoder()
+```
 
-// Register the DataType on both instances.
-decoder.register(dateDataType)
-encoder.register(dateDataType)
+#### Use Custom DataType
+```typescript
+
+const data = new Error("Something went wrong")
+const buffer = coder.encode(data)
+const encodedData = coder.decoder(buffer)
+console.log(encodedData) // Error: Something went wrong
 
 ```
 
@@ -147,10 +160,10 @@ String 16|String 17|String 18|String 19|String 20|String 21|String 22|String 23|
 **B0**|**B1**|**B2**|**B3**|**B4**|**B5**|**B6**|**B7**|**B8**|**B9**|**BA**|**BB**|**BC**|**BD**|**BE**|**BF**
 Object 0|Object 1|Object 2|Object 3|Object 4|Object 5|Object 6|Object 7|Array 0|Array 1|Array 2|Array 3|Array 4|Array 5|Array 6|Array 7
 **C0**|**C1**|**C2**|**C3**|**C4**|**C5**|**C6**|**C7**|**C8**|**C9**|**CA**|**CB**|**CC**|**CD**|**CE**|**CF**
-Int 8 |Int 16**|Int 32 |_reserved_|Uint 8|Uint 16|Uint 32|_reserved_|BigInt|_reserved_|Float 32|Float 64|_reserved_|_reserved_|_reserved_| _reserved_
+Int 8 |Int 16|Int 32 |_reserved_|Uint 8|Uint 16|Uint 32|_reserved_|BigInt|_reserved_|Float 32|Float 64|_reserved_|_reserved_|_reserved_| _reserved_
 **D0**|**D1**|**D2**|**D3**|**D4**|**D5**|**D6**|**D7**|**D8**|**D9**|**DA**|**DB**|**DC**|**DD**|**DE**|**DF**
 ArrayBuffer 8|ArrayBuffer 16|ArrayBuffer 32|_reserved_|String 8|String 16|String 32|_reserved_|Object 8|Object 16|Object 32|_reserved_|Array 8|Array 16|Array 32| _reserved_
 **E0**|**E1**|**E2**|**E3**|**E4**|**E5**|**E6**|**E7**|**E8**|**E9**|**EA**|**EB**|**EC**|**ED**|**EE**|**EF**
-Map 8|Map 16|Map 32|_reserved_|WeakMap 8|WeakMap 16|WeakMap 32|_reserved_|Set 8|Set 16|Set 32|_reserved_|WeakSet 8|WeakSet 16|WeakSet 32| _reserved_
+Map 8|Map 16|Map 32|_reserved_|Set 8|Set 16|Set 32|_reserved_|_reserved_|_reserved_|_reserved_|_reserved_|_reserved_|_reserved_|_reserved_| _reserved_
 **F0**|**F1**|**F2**|**F3**|**F4**|**F5**|**F6**|**F7**|**F8**|**F9**|**FA**|**FB**|**FC**|**FD**|**FE**|**FF**
 | _custom_ | _custom_| _custom_| _custom_| _custom_| _custom_| _custom_| _custom_| _custom_| _custom_| _custom_| _custom_| _custom_| _custom_|  _custom_| _custom_
