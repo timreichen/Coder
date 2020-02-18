@@ -13,7 +13,7 @@ JSON is great, except it doesn't support a lot of types. In comparison Coder sup
 ```js
   const date = new Date()
   
-  const string = JSON.stringify(date) // "2020-02-13T13:16:43.096Z
+  const string = JSON.stringify(date) // "2020-02-13T13:16:43.096Z"
   JSON.parse(string) // SyntaxError
 
   const buffer = encoder.encode(date)
@@ -39,22 +39,22 @@ consoel.log(encodedData) // { hello: "world" }
 It supports lots of types out of the box:
 
 #### Primitives
-* null
-* undefined
-* Boolean
-* Integer
-* Float
-* String
+* [null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null)
+* [undefined](https://developer.mozilla.org/en-US/docs/Glossary/undefined)
+* [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
+* [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) (Integer and Float)
+* [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)
+* [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)
 
 #### Objects
-* Object
-* Array
-* Date
-* RegExp
-* Set
-* WeakSet
-* Map
-* WeakMap
+* [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+* [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+* [Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+* [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+* [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
+* [WeakSet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet)
+* [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+* [WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
 
  <!-- #### Experimental -->
 
