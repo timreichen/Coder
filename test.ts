@@ -1,8 +1,9 @@
-import { test, runTests } from "https://deno.land/std@v0.32.0/testing/mod.ts";
 import { assert, assertEquals, assertThrowsAsync } from "https://deno.land/std/testing/asserts.ts"
 import { coder } from "./mod.ts"
 
-test(function test_null() {
+Deno.test({
+  name: "null",
+  fn: () => {
   const data = null
   const expectedByteLength = 1
 
@@ -11,8 +12,11 @@ test(function test_null() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_undefined() {
+Deno.test({
+  name: "undefined",
+  fn: () => {
   const data = undefined
   const expectedByteLength = 1
 
@@ -21,9 +25,12 @@ test(function test_undefined() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_true() {
+Deno.test({
+  name: "true",
+  fn: () => {
   const data = true
   const expectedByteLength = 1
 
@@ -32,8 +39,11 @@ test(function test_true() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_false() {
+Deno.test({
+  name: "false",
+  fn: () => {
   const data = false
   const expectedByteLength = 1
 
@@ -42,21 +52,12 @@ test(function test_false() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-// test(function test_boolean_constructor() {
-//   const data = new Boolean(1)
-//   const expectedByteLength = 1
-
-//   const buffer = coder.encode(data)
-//   const byteLength = buffer.byteLength
-//   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
-//   const result = coder.decode(buffer)
-//   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
-// })
-
-
-test(function test_infinity() {
+Deno.test({
+  name: "Infinity",
+  fn: () => {
   const data = Infinity
   const expectedByteLength = 1
 
@@ -65,8 +66,11 @@ test(function test_infinity() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_negative_infinity() {
+Deno.test({
+name: "-Infinity",
+fn: () => {
   const data = -Infinity
   const expectedByteLength = 1
 
@@ -75,9 +79,12 @@ test(function test_negative_infinity() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_fixed_int_negative_1() {
+Deno.test({
+name: "fixed Int -1",
+fn: () => {
   const data = -1
   const expectedByteLength = 1
 
@@ -86,8 +93,11 @@ test(function test_fixed_int_negative_1() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_fixed_int_32() {
+Deno.test({
+name: "fixed Int 32",
+fn: () => {
   const data = -32
   const expectedByteLength = 1
 
@@ -96,8 +106,11 @@ test(function test_fixed_int_32() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_int_8() {
+Deno.test({
+name: "Int 8",
+fn: () => {
   const data = -126
   const expectedByteLength = 2
 
@@ -106,8 +119,11 @@ test(function test_int_8() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_int_16() {
+Deno.test({
+name: "Int16",
+fn: () => {
   const data = -4095
   const expectedByteLength = 3
 
@@ -116,8 +132,11 @@ test(function test_int_16() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_int_32() {
+Deno.test({
+name: "Int32",
+fn: () => {
   const data = -1442511
   const expectedByteLength = 5
 
@@ -126,9 +145,12 @@ test(function test_int_32() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_number_constructor() {
+Deno.test({
+name: "number constructor",
+fn: () => {
   const data = Number(1)
   const expectedByteLength = 1
 
@@ -137,10 +159,13 @@ test(function test_number_constructor() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
 
-test(function test_fixed_uInt_0() {
+Deno.test({
+name: "fixed uInt 0",
+fn: () => {
   const data = 0
   const expectedByteLength = 1
 
@@ -149,8 +174,11 @@ test(function test_fixed_uInt_0() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_fixed_uInt_10() {
+Deno.test({
+name: "fixed uInt 10",
+fn: () => {
   const data = 10
   const expectedByteLength = 1
 
@@ -159,8 +187,11 @@ test(function test_fixed_uInt_10() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_uInt8() {
+Deno.test({
+name: "uInt8",
+fn: () => {
   const data = 65
   const expectedByteLength = 2
 
@@ -169,8 +200,11 @@ test(function test_uInt8() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_uInt16() {
+Deno.test({
+name: "uInt16",
+fn: () => {
   const data = 256
   const expectedByteLength = 3
 
@@ -179,8 +213,11 @@ test(function test_uInt16() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_uInt32() {
+Deno.test({
+name: "uInt32",
+fn: () => {
   const data = 1442511
   const expectedByteLength = 5
 
@@ -189,9 +226,12 @@ test(function test_uInt32() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_bigInt() {
+Deno.test({
+name: "BigInt",
+fn: () => {
   const data = 14425111231354n
   const expectedByteLength = 19
 
@@ -200,8 +240,11 @@ test(function test_bigInt() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_negative_bigInt() {
+Deno.test({
+name: "-BigInt",
+fn: () => {
   const data = -14425111231354n
   const expectedByteLength = 20
 
@@ -210,10 +253,13 @@ test(function test_negative_bigInt() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
 
-test(function test_Date() {
+Deno.test({
+name: "Date",
+fn: () => {
   const data = new Date()
   const expectedByteLength = 9
 
@@ -222,9 +268,12 @@ test(function test_Date() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data.getTime(), result.getTime(), `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_RegExp() {
+Deno.test({
+name: "RegExp",
+fn: () => {
   const data = /test[123]/g
   const expectedByteLength = 12
 
@@ -233,9 +282,12 @@ test(function test_RegExp() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data.source, result.source, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_fixed_String_0() {
+Deno.test({
+name: "fixed String 0",
+fn: () => {
   const data = "a".repeat(0)
   const expectedByteLength = 1
 
@@ -244,8 +296,11 @@ test(function test_fixed_String_0() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_fixed_String_21() {
+Deno.test({
+name: "fixed String 21",
+fn: () => {
   const data = "a".repeat(21)
   const expectedByteLength = 22
 
@@ -254,8 +309,11 @@ test(function test_fixed_String_21() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_String_8() {
+Deno.test({
+name: "String8",
+fn: () => {
   const data = "a".repeat(125)
   const expectedByteLength = 127
 
@@ -264,8 +322,11 @@ test(function test_String_8() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_String_16() {
+Deno.test({
+name: "String16",
+fn: () => {
   const data = "a".repeat(4000)
   const expectedByteLength = 4003
 
@@ -274,8 +335,11 @@ test(function test_String_16() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-test(function test_String_32() {
+Deno.test({
+name: "String32",
+fn: () => {
   const data = "a".repeat(1442511)
   const expectedByteLength = 1442516
 
@@ -284,9 +348,12 @@ test(function test_String_32() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_RegExp() {
+Deno.test({
+name: "RegExp",
+fn: () => {
   const data = /[123]+/g
   const expectedByteLength = 9
 
@@ -295,9 +362,12 @@ test(function test_RegExp() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data.source, result.source, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_Object_0() {
+Deno.test({
+name: "Object 0",
+fn: () => {
   const data = {}
   const expectedByteLength = 1
 
@@ -306,9 +376,12 @@ test(function test_Object_0() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_Object_1() {
+Deno.test({
+name: "Object 1",
+fn: () => {
   const data = {foo : true }
   const expectedByteLength = 6
 
@@ -317,10 +390,13 @@ test(function test_Object_1() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_Array_0() {
-  const data = []
+Deno.test({
+name: "Array 0",
+fn: () => {
+  const data: any[] = []
   const expectedByteLength = 1
 
   const buffer = coder.encode(data)
@@ -328,9 +404,12 @@ test(function test_Array_0() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
 
-test(function test_Array_1() {
+Deno.test({
+name: "Array 1",
+fn: () => {
   const data = ["foo", true ]
   const expectedByteLength = 6
 
@@ -339,6 +418,5 @@ test(function test_Array_1() {
   assertEquals(byteLength, expectedByteLength, `byteLength ${byteLength} is expected to be ${expectedByteLength}`)
   const result = coder.decode(buffer)
   assertEquals(data, result, `decoded value ${data} is not equal decoded value ${result}`)
+  }
 })
-
-runTests()
