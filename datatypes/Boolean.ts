@@ -1,7 +1,7 @@
 import { DataType } from "../DataType.ts"
 import { Encoder } from "../Encoder.ts"
 import { isType } from "../checks/typecheck.ts"
-import { Decoder } from "Decoder.ts"
+import { Decoder } from "../Decoder.ts"
 
 export class TrueDataType extends DataType {
 
