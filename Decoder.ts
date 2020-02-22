@@ -10,6 +10,7 @@ export class Decoder {
   constructor() {
     this.index = 0
     this.length = 0
+    this.buffer = new ArrayBuffer(this.length)
     this.dataTypes = new Map()
   }
   register(dataType: DataType | MultiDataType) {
@@ -29,7 +30,7 @@ export class Decoder {
     }
   }
 
-  decode(buffer, index = 0): any {   
+  decode(buffer: ArrayBuffer, index = 0): any {   
     this.buffer = buffer
     this.index = index
     const arrayBuffer = new Uint8Array(buffer)
