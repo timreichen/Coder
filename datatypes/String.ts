@@ -5,10 +5,10 @@ import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
 export class FixedStringDataType extends MultiDataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, String) && data.length < this.id.length
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const dataBuffer = Encoder.stringToBuffer(data)
     const length = dataBuffer.byteLength
     const id = this.id[length]
@@ -23,13 +23,13 @@ export class FixedStringDataType extends MultiDataType {
 }
 
 export class String8DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     if (!isType(data, String)) { return false }
     const textEncoder = new TextEncoder()
     const byteLength = textEncoder.encode(data).byteLength
     return byteLength <= UINT_8_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const dataBuffer = Encoder.stringToBuffer(data)
     const byteLength = dataBuffer.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
@@ -43,13 +43,13 @@ export class String8DataType extends DataType {
 }
 export class String16DataType extends DataType {
 
-  validate(data) {
+  validate(data: any) {
     if (!isType(data, String)) { return false }
     const textEncoder = new TextEncoder()
     const byteLength = textEncoder.encode(data).byteLength
     return byteLength <= UINT_16_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const dataBuffer = Encoder.stringToBuffer(data)
     const byteLength = dataBuffer.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
@@ -62,10 +62,10 @@ export class String16DataType extends DataType {
   }
 }
 export class String32DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, String) && data.length <= UINT_32_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const dataBuffer = Encoder.stringToBuffer(data)
     const byteLength = dataBuffer.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)

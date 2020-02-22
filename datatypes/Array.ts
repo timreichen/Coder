@@ -6,10 +6,10 @@ import { isType } from "../checks/typecheck.ts"
 import { UINT_8_MAX_VALUE, UINT_16_MAX_VALUE, UINT_32_MAX_VALUE } from "../checks/numbercheck.ts"
 
 export class FixedArrayDataType extends MultiDataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Array) &&  data.length < this.id.length
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.length
     const id = this.id[length]
     let buffer = Encoder.combineBuffers(Encoder.uInt8ToBuffer(id))
@@ -32,10 +32,10 @@ export class FixedArrayDataType extends MultiDataType {
 }
 
 export class Array8DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Array) && data.length <= UINT_8_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(length))
@@ -59,10 +59,10 @@ export class Array8DataType extends DataType {
   }
 }
 export class Array16DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Array) && data.length <= UINT_16_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length))
@@ -85,10 +85,10 @@ export class Array16DataType extends DataType {
   }
 }
 export class Array32DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Array) && data.length <= UINT_32_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length))

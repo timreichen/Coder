@@ -17,10 +17,10 @@ export class Coder {
     })
   }
 
-  encode(data) {
+  encode(data: any) {
     return this.encoder.encode(data)
   }
-  decode(data) {
+  decode(data: any) {
     return this.decoder.decode(data)
   }
 }

@@ -4,11 +4,11 @@ import { Decoder } from "../Decoder.ts"
 
 export class NullDataType extends DataType {
 
-  validate(data) {
+  validate(data: any) {
     return data === null
   }
 
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     return Encoder.uInt8ToBuffer(this.id)
   }
   decode(decoder: Decoder) {

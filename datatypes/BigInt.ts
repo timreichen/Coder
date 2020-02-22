@@ -5,10 +5,10 @@ import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
 export class BigIntDataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, BigInt)
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const dataString = String(data)
     const dataBuffer = Encoder.stringToBuffer(dataString)
     const length = dataBuffer.byteLength

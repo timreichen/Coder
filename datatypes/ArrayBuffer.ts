@@ -7,10 +7,10 @@ import { UINT_8_MAX_VALUE, UINT_16_MAX_VALUE, UINT_32_MAX_VALUE } from "../check
 
 
 export class ArrayBuffer8DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, ArrayBuffer) && data.byteLength <= UINT_8_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     return Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(length), data)
@@ -23,10 +23,10 @@ export class ArrayBuffer8DataType extends DataType {
 }
 
 export class ArrayBuffer16DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, ArrayBuffer) && data.byteLength <= UINT_16_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     return Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length), data)
@@ -39,10 +39,10 @@ export class ArrayBuffer16DataType extends DataType {
 }
 
 export class ArrayBuffer32DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, ArrayBuffer) && data.byteLength <= UINT_32_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.byteLength
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     return Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length), data)

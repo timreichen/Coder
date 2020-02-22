@@ -6,10 +6,10 @@ import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
 export class Set8DataType extends DataType {
-  validate(data) {    
+  validate(data: any) {    
     return isType(data, Set) && data.size <= UINT_8_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(length))
@@ -33,10 +33,10 @@ export class Set8DataType extends DataType {
 }
 
 export class Set16DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Set) && data.size <= UINT_16_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length))
@@ -59,10 +59,10 @@ export class Set16DataType extends DataType {
 }
 
 export class Set32DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Set) && data.size <= UINT_32_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length))

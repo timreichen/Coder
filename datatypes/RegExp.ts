@@ -6,7 +6,7 @@ import { Decoder } from "../Decoder.ts"
 
 export class RegExpDataType extends DataType {
 
-  validate(data) {
+  validate(data: any) {
     return isType(data, RegExp)
   }
 

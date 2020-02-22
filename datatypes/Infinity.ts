@@ -3,11 +3,11 @@ import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
 export class InfinitydDataType extends MultiDataType {
-  validate(data) {
+  validate(data: any) {
     return data === Infinity || data === -Infinity
   }
-  encode(encoder: Encoder, data) {
-    let id
+  encode(encoder: Encoder, data: any) {
+    let id: number
     switch (data) {
       case Infinity:
         id = this.id[0]
@@ -15,9 +15,13 @@ export class InfinitydDataType extends MultiDataType {
       case -Infinity:
         id = this.id[1]
         break
-      }
+      default:
+        throw Error(`id ${data} is not supported`)
+        break
+    }
       return Encoder.uInt8ToBuffer(id)
   }
+
   decode(decoder: Decoder) {
     const id = decoder.stepUint8()
     switch (id) {

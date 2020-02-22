@@ -7,11 +7,11 @@ import { isType } from "../checks/typecheck.ts"
 
 export class DateDataType extends DataType {
 
-  validate(data) {
+  validate(data: any) {
     return isType(data, Date)
   }
 
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const time = data.getTime()
     const dataBuffer = Encoder.uInt64ToBuffer(time)
     const idBuffer = Encoder.uInt8ToBuffer(this.id)

@@ -6,10 +6,10 @@ import { isType } from "../checks/typecheck.ts"
 import {  UINT_16_MAX_VALUE, UINT_32_MAX_VALUE, UINT_8_MAX_VALUE } from "../checks/numbercheck.ts"
 
 export class Map8DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Map) && data.size <= UINT_8_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(length))
@@ -35,10 +35,10 @@ export class Map8DataType extends DataType {
   }
 }
 export class Map16DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Map) && data.size <= UINT_16_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length))
@@ -64,10 +64,10 @@ export class Map16DataType extends DataType {
   }
 }
 export class Map32DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Map) && data.size <= UINT_32_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = data.size
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length))

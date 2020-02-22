@@ -79,7 +79,7 @@ import { DataType, Encoder, Decoder } from "https://raw.githubusercontent.com/ti
 export class ErrorDataType extends DataType {
 
   // The validate method returns true if data should be decoded for that type.
-  validate(data) {
+  validate(data: any) {
     return data instanceof Error && data.message.length <= 255 // limit message length to 255
   }
   

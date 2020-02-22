@@ -8,10 +8,10 @@ import { Decoder } from "../Decoder.ts"
 
 
 export class FixedUintDataType extends MultiDataType {
-  validate(data) {
+  validate(data: any) {
     return  isInteger(data) && this.id.includes(data)
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     return Encoder.uInt8ToBuffer(data)
   }
   decode(decoder: Decoder) {
@@ -22,11 +22,11 @@ export class FixedUintDataType extends MultiDataType {
 
 export class Uint8DataType extends DataType {
 
-  validate(data) {
+  validate(data: any) {
     return isInteger(data) && range(data, UINT_8_MIN_VALUE, UINT_8_MAX_VALUE)
   }
 
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     return Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(data))
   }
@@ -37,11 +37,11 @@ export class Uint8DataType extends DataType {
 }
 export class Uint16DataType extends DataType {
 
-  validate(data) {
+  validate(data: any) {
     return isInteger(data) && range(data, UINT_16_MIN_VALUE, UINT_16_MAX_VALUE)
   }
 
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     return Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(data))
   }
@@ -52,11 +52,11 @@ export class Uint16DataType extends DataType {
 }
 export class Uint32DataType extends DataType {
 
-  validate(data) {
+  validate(data: any) {
     return isInteger(data) && range(data, UINT_32_MIN_VALUE, UINT_32_MAX_VALUE)
   }
 
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     return Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(data))
   }
@@ -68,11 +68,11 @@ export class Uint32DataType extends DataType {
 
 // export class Uint64DataType extends DataType {
 
-//   validate(data) {
+//   validate(data: any) {
 //     return isInteger(data) && range(data, UINT_64_MIN_VALUE, UINT_64_MAX_VALUE)
 //   }
 
-//   encode(encoder: Encoder, data) {
+//   encode(encoder: Encoder, data: any) {
 //     console.log(data, Encoder.uInt64ToBuffer(data));
     
 //     const idBuffer = Encoder.uInt8ToBuffer(this.id)

@@ -6,10 +6,10 @@ import { isInteger } from "../checks/typecheck.ts"
 import { range, INT_8_MIN_VALUE, INT_8_MAX_VALUE, INT_16_MIN_VALUE, INT_16_MAX_VALUE, INT_32_MIN_VALUE, INT_32_MAX_VALUE, INT_64_MIN_VALUE, INT_64_MAX_VALUE } from "../checks/numbercheck.ts"
 
 export class FixedIntDataType extends MultiDataType {
-  validate(data) {
+  validate(data: any) {
     return  isInteger(data) && range(data, -1, -32)
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const index = (-data)-1
     return Encoder.combineBuffers(Encoder.int8ToBuffer(this.id[index]))
   }
@@ -22,11 +22,11 @@ export class FixedIntDataType extends MultiDataType {
 
 export class Int8DataType extends DataType {
 
-  validate(data) {
+  validate(data: any) {
     return isInteger(data) && range(data, INT_8_MIN_VALUE, INT_8_MAX_VALUE)
   }
 
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     return Encoder.combineBuffers(idBuffer, Encoder.int8ToBuffer(data))
   }
@@ -37,11 +37,11 @@ export class Int8DataType extends DataType {
 }
 export class Int16DataType extends DataType {
 
-  validate(data) {
+  validate(data: any) {
     return isInteger(data) && range(data, INT_16_MIN_VALUE, INT_16_MAX_VALUE)
   }
 
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     return Encoder.combineBuffers(idBuffer, Encoder.int16ToBuffer(data))
   }
@@ -52,11 +52,11 @@ export class Int16DataType extends DataType {
 }
 export class Int32DataType extends DataType {
 
-  validate(data) {
+  validate(data: any) {
     return isInteger(data) && range(data, INT_32_MIN_VALUE, INT_32_MAX_VALUE)
   }
 
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     return Encoder.combineBuffers(idBuffer, Encoder.int32ToBuffer(data))
   }
@@ -67,11 +67,11 @@ export class Int32DataType extends DataType {
 }
 
 // export class Int64DataType extends DataType {
-//   validate(data) {
+//   validate(data: any) {
 //     return isInteger(data) && range(data, INT_64_MIN_VALUE, INT_64_MAX_VALUE)
 //   }
 
-//   encode(encoder: Encoder, data) {
+//   encode(encoder: Encoder, data: any) {
 //     const idBuffer = Encoder.uInt8ToBuffer(this.id)
 //     return appendBuffer(idBuffer, Encoder.int64ToBuffer(data))
 //   }

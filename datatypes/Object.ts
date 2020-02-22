@@ -6,11 +6,11 @@ import { Encoder } from "../Encoder.ts"
 import { Decoder } from "../Decoder.ts"
 
 export class FixedObjectDataType extends MultiDataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Object) && Object.keys(data).length < this.id.length
   }
 
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = Object.keys(data).length
     const id = this.id[length]
     const idBuffer = Encoder.uInt8ToBuffer(id)
@@ -27,7 +27,7 @@ export class FixedObjectDataType extends MultiDataType {
   decode(decoder: Decoder) {
     const id = decoder.stepUint8()
     let length = this.id.indexOf(id)
-    const object = {}
+    const object: { [key: string]: any } = {}
     while (length--) {
       const key = decoder.decode(decoder.buffer, decoder.index)
       const value = decoder.decode(decoder.buffer, decoder.index)
@@ -38,10 +38,10 @@ export class FixedObjectDataType extends MultiDataType {
 }
 
 export class Object8DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Object) && Object.keys(data).length <= UINT_8_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = Object.keys(data).length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt8ToBuffer(length))
@@ -56,7 +56,7 @@ export class Object8DataType extends DataType {
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
     let length = decoder.stepUint8()
-    const object = {}
+    const object: { [key: string]: any } = {}
     while (length--) {
       const key = decoder.decode(decoder.buffer, decoder.index)
       const value = decoder.decode(decoder.buffer, decoder.index)
@@ -66,10 +66,10 @@ export class Object8DataType extends DataType {
   }
 }
 export class Object16DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Object) && Object.keys(data).length <= UINT_16_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = Object.keys(data).length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt16ToBuffer(length))
@@ -84,7 +84,7 @@ export class Object16DataType extends DataType {
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
     let length = decoder.stepUint16()
-    const object = {}
+    const object: { [key: string]: any } = {}
     while (length--) {
       const key = decoder.decode(decoder.buffer, decoder.index)
       const value = decoder.decode(decoder.buffer, decoder.index)
@@ -94,10 +94,10 @@ export class Object16DataType extends DataType {
   }
 }
 export class Object32DataType extends DataType {
-  validate(data) {
+  validate(data: any) {
     return isType(data, Object) && Object.keys(data).length <= UINT_32_MAX_VALUE
   }
-  encode(encoder: Encoder, data) {
+  encode(encoder: Encoder, data: any) {
     const length = Object.keys(data).length
     const idBuffer = Encoder.uInt8ToBuffer(this.id)
     let buffer = Encoder.combineBuffers(idBuffer, Encoder.uInt32ToBuffer(length))
@@ -112,7 +112,7 @@ export class Object32DataType extends DataType {
   decode(decoder: Decoder) {
     decoder.stepBytes(1)
     let length = decoder.stepUint32()
-    const object = {}
+    const object: { [key: string]: any } = {}
     while (length--) {
       const key = decoder.decode(decoder.buffer, decoder.index)
       const value = decoder.decode(decoder.buffer, decoder.index)
