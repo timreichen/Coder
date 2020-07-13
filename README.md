@@ -104,7 +104,7 @@ import { coder } from "https://raw.githubusercontent.com/timreichen/Coder/master
 // import custom DataType
 import { SymbolDataType } from "./path/to/SymbolDataType.ts"
 // Register custom DataType
-coder.register((0xf0, SymbolDataType)
+coder.register(0xf0, SymbolDataType)
 ```
 
 That's it! Now Symbols will be encoded and decoded.
