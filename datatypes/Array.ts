@@ -1,67 +1,95 @@
-import { Encoder } from "../Encoder.ts"
-import { Decoder } from "../Decoder.ts"
-import { UINT_8_MAX_VALUE, UINT_16_MAX_VALUE, UINT_32_MAX_VALUE } from "../helpers.ts"
+import { Encoder } from "../Encoder.ts";
+import { Decoder } from "../Decoder.ts";
+import {
+  UINT_8_MAX_VALUE,
+  UINT_16_MAX_VALUE,
+  UINT_32_MAX_VALUE,
+} from "../helpers.ts";
 
 export const fixedArrayDataType = (length: number) => ({
-  test(data: any) { return data instanceof Array && data.length === length },
+  test(data: any) {
+    return data instanceof Array && data.length === length;
+  },
   encode(encoder: Encoder, data: any) {
-    return data.reduce((buffer: any, item: any) => encoder.combineBuffers(buffer, encoder.encode(item)), new ArrayBuffer(0))
+    return data.reduce(
+      (buffer: any, item: any) =>
+        encoder.combineBuffers(buffer, encoder.encode(item)),
+      new ArrayBuffer(0),
+    );
   },
   decode(decoder: Decoder) {
-    const array: any[] = []
+    const array: any[] = [];
     while (length--) {
-      const item = decoder.next()
-      array.push(item)
+      const item = decoder.next();
+      array.push(item);
     }
-    return array
-  }
-})
+    return array;
+  },
+});
 
 export const Array8DataType = {
-  test(data: any) { return data instanceof Array && data.length <= UINT_8_MAX_VALUE },
+  test(data: any) {
+    return data instanceof Array && data.length <= UINT_8_MAX_VALUE;
+  },
   encode(encoder: Encoder, data: any) {
-    const length = data.length
-    return data.reduce((buffer: any, item: any) => encoder.combineBuffers(buffer, encoder.encode(item)), encoder.uInt8ToBuffer(length))
+    const length = data.length;
+    return data.reduce(
+      (buffer: any, item: any) =>
+        encoder.combineBuffers(buffer, encoder.encode(item)),
+      encoder.uInt8ToBuffer(length),
+    );
   },
   decode(decoder: Decoder) {
-    let length = decoder.stepUint8()
-    const array: any[] = []
+    let length = decoder.stepUint8();
+    const array: any[] = [];
     while (length--) {
-      const item = decoder.next()
-      array.push(item)
+      const item = decoder.next();
+      array.push(item);
     }
-    return array
-  }
-}
+    return array;
+  },
+};
 export const Array16DataType = {
-  test(data: any) { return data instanceof Array && data.length <= UINT_16_MAX_VALUE },
+  test(data: any) {
+    return data instanceof Array && data.length <= UINT_16_MAX_VALUE;
+  },
   encode(encoder: Encoder, data: any) {
-    const length = data.length
-    return data.reduce((buffer: any, item: any) => encoder.combineBuffers(buffer, encoder.encode(item)), encoder.uInt16ToBuffer(length))
+    const length = data.length;
+    return data.reduce(
+      (buffer: any, item: any) =>
+        encoder.combineBuffers(buffer, encoder.encode(item)),
+      encoder.uInt16ToBuffer(length),
+    );
   },
   decode(decoder: Decoder) {
-    let length = decoder.stepUint16()
-    const array: any[] = []
+    let length = decoder.stepUint16();
+    const array: any[] = [];
     while (length--) {
-      const item = decoder.next()
-      array.push(item)
+      const item = decoder.next();
+      array.push(item);
     }
-    return array
-  }
-}
+    return array;
+  },
+};
 export const Array32DataType = {
-  test(data: any) { return data instanceof Array && data.length <= UINT_32_MAX_VALUE },
+  test(data: any) {
+    return data instanceof Array && data.length <= UINT_32_MAX_VALUE;
+  },
   encode(encoder: Encoder, data: any) {
-    const length = data.length
-    return data.reduce((buffer: any, item: any) => encoder.combineBuffers(buffer, encoder.encode(item)), encoder.uInt32ToBuffer(length))
+    const length = data.length;
+    return data.reduce(
+      (buffer: any, item: any) =>
+        encoder.combineBuffers(buffer, encoder.encode(item)),
+      encoder.uInt32ToBuffer(length),
+    );
   },
   decode(decoder: Decoder) {
-    let length = decoder.stepUint32()
-    const array: any[] = []
+    let length = decoder.stepUint32();
+    const array: any[] = [];
     while (length--) {
-      const item = decoder.next()
-      array.push(item)
+      const item = decoder.next();
+      array.push(item);
     }
-    return array
-  }
-}
+    return array;
+  },
+};
