@@ -1,44 +1,33 @@
-import { DataType, MultiDataType } from "./DataType.ts"
+import { DataType } from "./DataType.ts"
+
+const decoder = new TextDecoder()
 
 export class Decoder {
-  buffer: ArrayBuffer
-  index: number
-  length: number
+  private buffer: ArrayBuffer
+  private index: number
+  private length: number
+  private dataTypes: Map<number, DataType>
 
-  private dataTypes: Map<number|number[], DataType | MultiDataType>
-
-  constructor() {
+  constructor(dataTypes=new Map()) {
+    this.dataTypes = dataTypes
     this.index = 0
     this.length = 0
     this.buffer = new ArrayBuffer(this.length)
-    this.dataTypes = new Map()
-  }
-  register(dataType: DataType | MultiDataType) {
-    if (dataType instanceof MultiDataType) {
-      dataType.id.forEach(id => {
-        if (this.dataTypes.has(id)) {
-          return console.warn(`type for id ${id} is already defined`)
-        }
-        this.dataTypes.set(id, dataType)
-      })
-    } else {
-      const id = dataType.id
-      if (this.dataTypes.has(id)) {
-        return console.warn(`type for id ${id} is already defined`)
-      }
-      this.dataTypes.set(id, dataType)
-    }
   }
 
+  register(id: number, dataType: DataType) {
+    this.dataTypes.set(id, dataType)
+  }
+  
   decode(buffer: ArrayBuffer, index = 0): any {   
     this.buffer = buffer
     this.index = index
     const arrayBuffer = new Uint8Array(buffer)
     this.length = arrayBuffer.length
-    const id = this.peekUint8()
+    const id = this.stepUint8()
     const dataType = this.dataTypes.get(id)
-    if (!dataType) { throw Error(`dataType '${id}' at index '${index}' not supported`) }
-    return dataType.decode(this)
+    if (!dataType) { throw Error(`dataType '${id}' at index '${index}' is not supported`) }
+    return dataType.decode(this, id)
   }
 
   static bufferToInt8(buffer: ArrayBuffer, offset: number) {
@@ -54,10 +43,10 @@ export class Decoder {
     const view = new DataView(buffer)
     return view.getInt32(offset)
   }
-  static bufferToInt64(buffer: ArrayBuffer, offset: number) {
-    const view = new DataView(buffer)
-    return view.getBigInt64(offset)
-  }
+  // static bufferToInt64(buffer: ArrayBuffer, offset: number) {
+  //   const view = new DataView(buffer)    
+  //   return view.getBigInt64(offset)
+  // }
 
   static bufferToUint8(buffer: ArrayBuffer, offset: number) {
     const view = new DataView(buffer)
@@ -86,16 +75,15 @@ export class Decoder {
   }
 
   static bufferToString(buffer: ArrayBuffer, offset: number, length: number) {
-    const decoder = new TextDecoder()
     const dataBuffer = buffer.slice(offset, offset + length)
     return decoder.decode(dataBuffer)
-    // const charCodes = new Uint8Array(buffer.slice(offset, length))
-    // const string = String.fromCharCode(...charCodes)
-    // return string
   }
 
   stepBytes(bytes=1) {
     this.index += bytes
+  }
+  next() {
+    return this.decode(this.buffer, this.index)
   }
 
   peekInt8() {
@@ -124,14 +112,14 @@ export class Decoder {
     return result
   }
 
-  peekInt64() {
-    return Decoder.bufferToInt64(this.buffer, this.index)
-  }
-  stepInt64() {
-    const result = Decoder.bufferToInt64(this.buffer, this.index)
-    this.stepBytes(8)
-    return result
-  }
+  // peekInt64() {
+  //   return Decoder.bufferToInt64(this.buffer, this.index)
+  // }
+  // stepInt64() {
+  //   const result = Decoder.bufferToInt64(this.buffer, this.index)
+  //   this.stepBytes(8)
+  //   return result
+  // }
 
 
   peekUint8() {
@@ -153,6 +141,7 @@ export class Decoder {
     this.stepBytes(4)
     return result
   }
+  
   stepUint64() {
     const result = Decoder.bufferToUint64(this.buffer, this.index)
     this.stepBytes(8)

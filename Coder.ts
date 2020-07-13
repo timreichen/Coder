@@ -1,26 +1,26 @@
 import { Encoder } from "./Encoder.ts"
 import { Decoder } from "./Decoder.ts"
-import { DataType, MultiDataType } from "./DataType.ts"
-
+import { DataType } from "./DataType.ts"
 
 export class Coder {
-  private encoder: Encoder
-  private decoder: Decoder
-  constructor(encoder: Encoder=new Encoder(), decoder: Decoder=new Decoder()) {
-    this.encoder = encoder
-    this.decoder = decoder
-  }
-  register(...dataTypes: (DataType|MultiDataType)[]) {
-    dataTypes.forEach(dataType => {
-      this.encoder.register(dataType)
-      this. decoder.register(dataType)
-    })
+  encoder: Encoder
+  decoder: Decoder
+  constructor(dataTypes: Map<number, DataType>) {
+    this.encoder = new Encoder(dataTypes)
+    this.decoder = new Decoder(dataTypes)
   }
 
-  encode(data: any) {
+  register(id: number, dataType: DataType) {
+    this.encoder.register(id, dataType)
+    this.decoder.register(id, dataType)
+  }
+
+  encode(data: any): ArrayBuffer {
     return this.encoder.encode(data)
   }
-  decode(data: any) {
-    return this.decoder.decode(data)
+
+  decode(buffer: ArrayBuffer): any {
+    return this.decoder.decode(buffer)
   }
+
 }

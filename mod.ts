@@ -1,110 +1,114 @@
-import { NullDataType } from "./datatypes/null.ts"
-import { UndefinedDataType } from "./datatypes/undefined.ts"
-import { FalseDataType, TrueDataType } from "./datatypes/Boolean.ts"
-import { FixedUintDataType, Uint8DataType, Uint16DataType, Uint32DataType } from "./datatypes/Uint.ts"
-import { FixedIntDataType, Int8DataType, Int16DataType, Int32DataType } from "./datatypes/Int.ts"
-import { Float32DataType, Float64DataType } from "./datatypes/Float.ts"
-import { FixedStringDataType, String8DataType, String16DataType, String32DataType } from "./datatypes/String.ts"
-import { FixedArrayDataType, Array8DataType, Array16DataType, Array32DataType } from "./datatypes/Array.ts"
-import { FixedObjectDataType, Object16DataType, Object32DataType, Object8DataType } from "./datatypes/Object.ts"
-import { DateDataType } from "./datatypes/Date.ts"
-import { ArrayBuffer8DataType, ArrayBuffer16DataType, ArrayBuffer32DataType } from "./datatypes/ArrayBuffer.ts"
-import { BigIntDataType } from "./datatypes/BigInt.ts"
-import { RegExpDataType } from "./datatypes/RegExp.ts"
-import { InfinitydDataType } from "./datatypes/Infinity.ts"
-import { Set16DataType, Set32DataType, Set8DataType } from "./datatypes/Set.ts"
-import { Map16DataType, Map32DataType, Map8DataType } from "./datatypes/Map.ts"
-
-export { DataType, MultiDataType } from "./DataType.ts"
 import { Coder } from "./Coder.ts"
 export { Encoder } from "./Encoder.ts"
 export { Decoder } from "./Decoder.ts"
+import { DateDataType } from "./DataTypes/Date.ts"
+export { DateDataType }
 
-export const coder = new Coder()
-export { Coder }
+import { fixedStringDataType, string8DataType, string16DataType, string32DataType } from "./DataTypes/string.ts"
+import { uInt8DataType, uInt16DataType, uInt32DataType, } from "./DataTypes/number.ts"
+import { nInt8DataType, nInt32DataType, nInt16DataType } from "./DataTypes/number.ts"
+import { float32DataType, float64DataType } from "./DataTypes/number.ts"
 
-export const defaultDataTypes = [
-  new FixedUintDataType([
-    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-    0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
-    0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f,
-    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f,
-  ]),
+import { fixedValueDataType } from "./DataTypes/fixed.ts"
+import { RegExpDataType } from "./DataTypes/RegExp.ts"
+import { ErrorDataType } from "./DataTypes/Error.ts"
+import { ArrayBuffer8DataType, ArrayBuffer16DataType, ArrayBuffer32DataType } from "./DataTypes/ArrayBuffer.ts"
+import { fixedArrayDataType, Array8DataType, Array16DataType, Array32DataType } from "./DataTypes/Array.ts"
+import { fixedObjectDataType, Object8DataType, Object16DataType, Object32DataType } from "./DataTypes/Object.ts"
+import { Map8DataType, Map16DataType, Map32DataType } from "./DataTypes/Map.ts"
+import { Set8DataType, Set16DataType, Set32DataType } from "./DataTypes/Set.ts"
+import { BigIntDataType } from "./DataTypes/BigInt.ts"
 
-  new FixedIntDataType([
-    0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,
-    0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f,
-    0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f,
-    0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x7b, 0x7c, 0x7d, 0x7e, 0x7f,
-  ]),
+const RESERVED = {
+  test() { return false },
+  encode() { return new ArrayBuffer(0) },
+  decode() { }
+}
+const CUSTOM = RESERVED
 
-  new NullDataType(0x80),
-  new UndefinedDataType(0x81),
-  new FalseDataType(0x82),
-  new TrueDataType(0x83),
+const map = new Map([
+  [0x00, fixedValueDataType(0)], [0x01, fixedValueDataType(1)], [0x02, fixedValueDataType(2)], [0x03, fixedValueDataType(3)],
+  [0x04, fixedValueDataType(4)], [0x05, fixedValueDataType(5)], [0x06, fixedValueDataType(6)], [0x07, fixedValueDataType(7)],
+  [0x08, fixedValueDataType(8)], [0x09, fixedValueDataType(9)], [0x0a, fixedValueDataType(10)], [0x0b, fixedValueDataType(11)],
+  [0x0c, fixedValueDataType(12)], [0x0d, fixedValueDataType(13)], [0x0e, fixedValueDataType(14)], [0x0f, fixedValueDataType(15)],
 
-  new DateDataType(0x84),
-  new RegExpDataType(0x88),
+  [0x10, fixedValueDataType(16)], [0x11, fixedValueDataType(17)], [0x12, fixedValueDataType(18)], [0x13, fixedValueDataType(19)],
+  [0x14, fixedValueDataType(20)], [0x15, fixedValueDataType(21)], [0x16, fixedValueDataType(22)], [0x17, fixedValueDataType(23)],
+  [0x18, fixedValueDataType(24)], [0x19, fixedValueDataType(25)], [0x1a, fixedValueDataType(26)], [0x1b, fixedValueDataType(27)],
+  [0x1c, fixedValueDataType(28)], [0x1d, fixedValueDataType(29)], [0x1e, fixedValueDataType(30)], [0x1f, fixedValueDataType(31)],
 
-  new InfinitydDataType([0x8e, 0x8f]),
+  [0x20, fixedValueDataType(32)], [0x21, fixedValueDataType(33)], [0x22, fixedValueDataType(34)], [0x23, fixedValueDataType(35)],
+  [0x24, fixedValueDataType(36)], [0x25, fixedValueDataType(37)], [0x26, fixedValueDataType(38)], [0x27, fixedValueDataType(39)],
+  [0x28, fixedValueDataType(40)], [0x29, fixedValueDataType(41)], [0x2a, fixedValueDataType(42)], [0x2b, fixedValueDataType(43)],
+  [0x2c, uInt8DataType], [0x2d, uInt16DataType], [0x2e, uInt32DataType], [0x2f, RESERVED],
 
-  new FixedStringDataType([
-    0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9e, 0x9f,
-    0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf,
-  ]),
+  [0x30, fixedValueDataType(-1)], [0x31, fixedValueDataType(-2)], [0x32, fixedValueDataType(-3)], [0x33, fixedValueDataType(-4)],
+  [0x34, fixedValueDataType(-5)], [0x35, fixedValueDataType(-6)], [0x36, fixedValueDataType(-7)], [0x37, fixedValueDataType(-8)],
+  [0x38, fixedValueDataType(-9)], [0x39, fixedValueDataType(-10)], [0x3a, fixedValueDataType(-11)], [0x3b, fixedValueDataType(-12)],
+  [0x3c, fixedValueDataType(-13)], [0x3d, fixedValueDataType(-14)], [0x3e, fixedValueDataType(-15)], [0x3f, fixedValueDataType(-16)],
 
-  new FixedObjectDataType([
-    0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xb7
-  ]),
-  new FixedArrayDataType([
-    0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbe, 0xbf
-  ]),
+  [0x40, fixedValueDataType(-17)], [0x41, fixedValueDataType(-18)], [0x42, fixedValueDataType(-19)], [0x43, fixedValueDataType(-20)],
+  [0x44, fixedValueDataType(-21)], [0x45, fixedValueDataType(-22)], [0x46, fixedValueDataType(-23)], [0x47, fixedValueDataType(-24)],
+  [0x48, fixedValueDataType(-25)], [0x49, fixedValueDataType(-26)], [0x4a, fixedValueDataType(-27)], [0x4b, fixedValueDataType(-28)],
+  [0x4c, fixedValueDataType(-29)], [0x4d, fixedValueDataType(-30)], [0x4e, fixedValueDataType(-31)], [0x4f, fixedValueDataType(-32)],
 
-  new Uint8DataType(0xc0),
-  new Uint16DataType(0xc1),
-  new Uint32DataType(0xc2),
-  // new Uint64DataType(0xc3),
+  [0x50, fixedValueDataType(-33)], [0x51, fixedValueDataType(-34)], [0x52, fixedValueDataType(-35)], [0x53, fixedValueDataType(-36)],
+  [0x54, fixedValueDataType(-37)], [0x55, fixedValueDataType(-38)], [0x56, fixedValueDataType(-39)], [0x57, fixedValueDataType(-40)],
+  [0x58, fixedValueDataType(-41)], [0x59, fixedValueDataType(-42)], [0x5a, fixedValueDataType(-43)], [0x5b, fixedValueDataType(-44)],
+  [0x5c, nInt8DataType], [0x5d, nInt16DataType], [0x5e, nInt32DataType], [0x5f, RESERVED],
 
-  new Int8DataType(0xc4),
-  new Int16DataType(0xc5),
-  new Int32DataType(0xc6),
-  // new Int64DataType(0xc7),
-  
-  new BigIntDataType(0xc8),
+  [0x60, BigIntDataType], [0x61, RESERVED], [0x62, float32DataType], [0x63, float64DataType],
+  [0x64, fixedValueDataType(null)], [0x65, fixedValueDataType(undefined)], [0x66, fixedValueDataType(true)], [0x67, fixedValueDataType(false)],
+  [0x68, RESERVED], [0x69, RESERVED], [0x6a, RESERVED], [0x6b, RESERVED],
+  [0x6c, RESERVED], [0x6d, RESERVED], [0x6e, RESERVED], [0x6f, RESERVED],
 
-  new Float32DataType(0xca),
-  new Float64DataType(0xcb),
+  [0x70, DateDataType], [0x71, RegExpDataType], [0x72, ErrorDataType], [0x73, RESERVED],
+  [0x74, RESERVED], [0x75, RESERVED], [0x76, RESERVED], [0x77, RESERVED],
+  [0x78, RESERVED], [0x79, RESERVED], [0x7a, RESERVED], [0x7b, RESERVED],
+  [0x7c, ArrayBuffer8DataType], [0x7d, ArrayBuffer16DataType], [0x7e, ArrayBuffer32DataType], [0x7f, RESERVED],
 
-  new ArrayBuffer8DataType(0xd0),
-  new ArrayBuffer16DataType(0xd1),
-  new ArrayBuffer32DataType(0xd2),
-  // new ArrayBuffer364ataType(0xd2),
+  [0x80, fixedStringDataType(0)], [0x81, fixedStringDataType(1)], [0x82, fixedStringDataType(2)], [0x83, fixedStringDataType(3)],
+  [0x84, fixedStringDataType(4)], [0x85, fixedStringDataType(5)], [0x86, fixedStringDataType(6)], [0x87, fixedStringDataType(7)],
+  [0x88, fixedStringDataType(8)], [0x89, fixedStringDataType(9)], [0x8a, fixedStringDataType(10)], [0x8b, fixedStringDataType(11)],
+  [0x8c, fixedStringDataType(12)], [0x8d, fixedStringDataType(13)], [0x8e, fixedStringDataType(14)], [0x8f, fixedStringDataType(15)],
 
-  new String8DataType(0xd4),
-  new String16DataType(0xd5),
-  new String32DataType(0xd6),
-  // new String64DataType(0xd7),
+  [0x90, fixedStringDataType(16)], [0x91, fixedStringDataType(17)], [0x92, fixedStringDataType(18)], [0x93, fixedStringDataType(19)],
+  [0x94, fixedStringDataType(20)], [0x95, fixedStringDataType(21)], [0x96, fixedStringDataType(22)], [0x97, fixedStringDataType(23)],
+  [0x98, fixedStringDataType(24)], [0x99, fixedStringDataType(25)], [0x9a, fixedStringDataType(26)], [0x9b, fixedStringDataType(27)],
+  [0x9c, string8DataType], [0x9d, string16DataType], [0x9e, string32DataType], [0x9f, RESERVED],
 
-  new Object8DataType(0xd8),
-  new Object16DataType(0xd9),
-  new Object32DataType(0xda),
-  // new Object64DataType(0xdb),
+  [0xa0, fixedArrayDataType(0)], [0xa1, fixedArrayDataType(1)], [0xa2, fixedArrayDataType(2)], [0xa3, fixedArrayDataType(3)],
+  [0xa4, fixedArrayDataType(4)], [0xa5, fixedArrayDataType(5)], [0xa6, fixedArrayDataType(6)], [0xa7, fixedArrayDataType(7)],
+  [0xa8, fixedArrayDataType(8)], [0xa9, fixedArrayDataType(9)], [0xaa, fixedArrayDataType(10)], [0xab, fixedArrayDataType(11)],
+  [0xac, Array8DataType], [0xad, Array16DataType], [0xae, Array32DataType], [0xaf, RESERVED],
 
-  new Array8DataType(0xcc),
-  new Array16DataType(0xcd),
-  new Array32DataType(0xce),
-  // new Array64DataType(0xcf),
 
-  new Map8DataType(0xe0),
-  new Map16DataType(0xe1),
-  new Map32DataType(0xe2),
-  // new Map64DataType(0xe3),
+  [0xb0, fixedObjectDataType(0)], [0xb1, fixedObjectDataType(1)], [0xb2, fixedObjectDataType(2)], [0xb3, fixedObjectDataType(3)],
+  [0xb4, fixedObjectDataType(4)], [0xb5, fixedObjectDataType(5)], [0xb6, fixedObjectDataType(6)], [0xb7, fixedObjectDataType(7)],
+  [0xb8, fixedObjectDataType(8)], [0xb9, fixedObjectDataType(9)], [0xba, fixedObjectDataType(10)], [0xbb, fixedObjectDataType(11)],
+  [0xbc, Object8DataType], [0xbd, Object16DataType], [0xbe, Object32DataType], [0xbf, RESERVED],
 
-  new Set8DataType(0xe8),
-  new Set16DataType(0xe9),
-  new Set32DataType(0xea),
-  // new Set64DataType(0xeb),
-  
-]
 
-coder.register(...defaultDataTypes)
+  [0xc0, Map8DataType], [0xc1, Map16DataType], [0xc2, Map32DataType], [0xc3, RESERVED],
+  [0xc4, Set8DataType], [0xc5, Set16DataType], [0xc6, Set32DataType], [0xc7, RESERVED],
+  [0xc8, RESERVED], [0xc9, RESERVED], [0xca, RESERVED], [0xcb, RESERVED],
+  [0xcc, RESERVED], [0xcd, RESERVED], [0xce, RESERVED], [0xcf, RESERVED],
+
+  [0xd0, RESERVED], [0xd1, RESERVED], [0xd2, RESERVED], [0xd3, RESERVED],
+  [0xd4, RESERVED], [0xd5, RESERVED], [0xd6, RESERVED], [0xd7, RESERVED],
+  [0xd8, RESERVED], [0xd9, RESERVED], [0xda, RESERVED], [0xdb, RESERVED],
+  [0xdc, RESERVED], [0xdd, RESERVED], [0xde, RESERVED], [0xdf, RESERVED],
+
+  [0xe0, RESERVED], [0xe1, RESERVED], [0xe2, RESERVED], [0xe3, RESERVED],
+  [0xe4, RESERVED], [0xe5, RESERVED], [0xe6, RESERVED], [0xe7, RESERVED],
+  [0xe8, RESERVED], [0xe9, RESERVED], [0xea, RESERVED], [0xeb, RESERVED],
+  [0xec, RESERVED], [0xed, RESERVED], [0xee, RESERVED], [0xef, RESERVED],
+
+  [0xf0, CUSTOM], [0xf1, CUSTOM], [0xf2, CUSTOM], [0xf3, CUSTOM],
+  [0xf4, CUSTOM], [0xf5, CUSTOM], [0xf6, CUSTOM], [0xf7, CUSTOM],
+  [0xf8, CUSTOM], [0xf9, CUSTOM], [0xfa, CUSTOM], [0xfb, CUSTOM],
+  [0xfc, CUSTOM], [0xfd, CUSTOM], [0xfe, CUSTOM], [0xff, CUSTOM],
+
+])
+
+export const coder = new Coder(map)
