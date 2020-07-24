@@ -6,6 +6,8 @@ Encode and decode data and retain data types.
 
 Coder encodes javacript data into a buffer and decodes it back. Therefore data can be sent over the network without losing data types.
 
+- Works out of the box
+- is extendable
 
 ### I can do that with JSON, right?
 JSON is great, except it doesn't support a lot of types.
@@ -15,9 +17,9 @@ const date = new Date()
 const string = JSON.stringify(date) // "2020-02-13T13:16:43.096Z"
 JSON.parse(string) // SyntaxError
 ```
-In comparison Coder supports a lot of different types so your data will have the same type again.
+In comparison Coder supports a lot of different types by default so your data will have the same type after decoding.
 ```js
-import {coder} from "https://raw.githubusercontent.com/timreichen/Coder/master/mod.ts"
+import { coder } from "https://deno.land/x/coder/mod.ts"
 const date = new Date()
 
 const buffer = coder.encode(date) // ArrayBuffer
@@ -25,11 +27,11 @@ coder.decode(buffer) // Date()
 ```
 
 ### But there is messagepack and protocol buffers, right?
-Yes, and this project is inspired by messagepack. But Coder is specifically designed between comunicating between client- and server-side javascript. Therefore it only cares about javacript types and you don't have to convert objects.
+Yes, and this project is inspired by messagepack. But Coder is specifically designed between comunicating between client- and server-side javascript. Therefore it only cares about javacript types.
 
 ## Usage
 ```typescript
-import { coder } from "https://raw.githubusercontent.com/timreichen/Coder/master/mod.ts"
+import { coder } from "https://deno.land/x/coder/mod.ts"
 
 const date = new Date()
 const buffer = coder.encode(data)
@@ -42,16 +44,16 @@ Coder supports lots of types out of the box:
 
 * [null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null)
 * [undefined](https://developer.mozilla.org/en-US/docs/Glossary/undefined)
+<br>
+
 * [boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
 * [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)
+* [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)
+  **Limitation**: Webkit does not yet support ```BigInt```. Coder uses a small polyfill with limitations for DataView ```getBigInt64```, ```setBigInt64```, ```getBigUint64```, ```setBigUint64```.
+  <br>
 * [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)
 
   <br>
-
-* [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)
-  **Limitation**: Webkit does not yet support ```BigInt```. Coder is therefore not usable in Safari at the moment.
-  <br>
-
 * [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
 * [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
 
@@ -72,13 +74,14 @@ Some possible candidates are:
 * [Infinity and -Infinity](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity)
 
 ### Custom DataType Definition
-New DataTypes can be easily implemented.
+Coder can easily be extended with custom DataTypes.
 
+Example:
 #### 1. Define Custom DataType
 
 ```typescript
 // SymbolDataType.ts
-import { DataType, Encoder, Decoder } from "https://raw.githubusercontent.com/timreichen/Coder/master/mod.ts"
+import { DataType, Encoder, Decoder } from "https://deno.land/x/coder/mod.ts"
 
 export const SymbolDataType = {
   // The test method returns true if data should be decoded for that type.
@@ -100,7 +103,7 @@ export const SymbolDataType = {
 ```
 #### 2. Register Custom DataType
 ```typescript
-import { coder } from "https://raw.githubusercontent.com/timreichen/Coder/master/mod.ts"
+import { coder } from "https://deno.land/x/coder/mod.ts"
 // import custom DataType
 import { SymbolDataType } from "./path/to/SymbolDataType.ts"
 // Register custom DataType
