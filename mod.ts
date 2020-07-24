@@ -1,7 +1,7 @@
 import { Coder } from "./Coder.ts";
 export { Encoder } from "./Encoder.ts";
 export { Decoder } from "./Decoder.ts";
-import { DateDataType } from "./DataTypes/Date.ts";
+import { DateDataType } from "./datatypes/Date.ts";
 export { DateDataType };
 
 import {
@@ -9,42 +9,42 @@ import {
   string8DataType,
   string16DataType,
   string32DataType,
-} from "./DataTypes/string.ts";
+} from "./datatypes/String.ts";
 import {
   uInt8DataType,
   uInt16DataType,
   uInt32DataType,
-} from "./DataTypes/number.ts";
+} from "./datatypes/number.ts";
 import {
   nInt8DataType,
   nInt32DataType,
   nInt16DataType,
-} from "./DataTypes/number.ts";
-import { float32DataType, float64DataType } from "./DataTypes/number.ts";
+} from "./datatypes/number.ts";
+import { float32DataType, float64DataType } from "./datatypes/number.ts";
 
-import { fixedValueDataType } from "./DataTypes/fixed.ts";
-import { RegExpDataType } from "./DataTypes/RegExp.ts";
-import { ErrorDataType } from "./DataTypes/Error.ts";
+import { fixedValueDataType } from "./datatypes/fixed.ts";
+import { RegExpDataType } from "./datatypes/RegExp.ts";
+import { ErrorDataType } from "./datatypes/Error.ts";
 import {
   ArrayBuffer8DataType,
   ArrayBuffer16DataType,
   ArrayBuffer32DataType,
-} from "./DataTypes/ArrayBuffer.ts";
+} from "./datatypes/ArrayBuffer.ts";
 import {
   fixedArrayDataType,
   Array8DataType,
   Array16DataType,
   Array32DataType,
-} from "./DataTypes/Array.ts";
+} from "./datatypes/Array.ts";
 import {
   fixedObjectDataType,
   Object8DataType,
   Object16DataType,
   Object32DataType,
-} from "./DataTypes/Object.ts";
-import { Map8DataType, Map16DataType, Map32DataType } from "./DataTypes/Map.ts";
-import { Set8DataType, Set16DataType, Set32DataType } from "./DataTypes/Set.ts";
-import { BigIntDataType } from "./DataTypes/BigInt.ts";
+} from "./datatypes/Object.ts";
+import { Map8DataType, Map16DataType, Map32DataType } from "./datatypes/Map.ts";
+import { Set8DataType, Set16DataType, Set32DataType } from "./datatypes/Set.ts";
+import { BigIntDataType } from "./datatypes/BigInt.ts";
 
 const RESERVED = {
   test() {

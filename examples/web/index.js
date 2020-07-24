@@ -1,4 +1,5 @@
-import { coder } from "./Coder.js";
-const encoded = coder.encode({ hello: "world" });
-console.log(encoded);
-console.log(coder.decode(encoded));
+import { coder } from "./coder.js";
+const date = new Date(2020, 1, 1, 0, 0, 0, 0);
+const encoded = coder.encode(date);
+const decoded = coder.decode(encoded);
+console.log(date.getTime() === decoded.getTime());

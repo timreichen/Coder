@@ -142,10 +142,6 @@ System.register("Decoder", [], function (exports_1, context_1) {
           const view = new DataView(buffer);
           return view.getInt32(offset);
         }
-        // static bufferToInt64(buffer: ArrayBuffer, offset: number) {
-        //   const view = new DataView(buffer)
-        //   return view.getBigInt64(offset)
-        // }
         static bufferToUint8(buffer, offset) {
           const view = new DataView(buffer);
           return view.getUint8(offset);
@@ -204,14 +200,6 @@ System.register("Decoder", [], function (exports_1, context_1) {
           this.stepBytes(4);
           return result;
         }
-        // peekInt64() {
-        //   return Decoder.bufferToInt64(this.buffer, this.index)
-        // }
-        // stepInt64() {
-        //   const result = Decoder.bufferToInt64(this.buffer, this.index)
-        //   this.stepBytes(8)
-        //   return result
-        // }
         peekUint8() {
           return Decoder.bufferToUint8(this.buffer, this.index);
         }
@@ -422,7 +410,7 @@ System.register(
     };
   },
 );
-System.register("DataTypes/Date", [], function (exports_5, context_5) {
+System.register("datatypes/Date", [], function (exports_5, context_5) {
   "use strict";
   var DateDataType;
   var __moduleName = context_5 && context_5.id;
@@ -521,7 +509,7 @@ System.register("helpers", [], function (exports_6, context_6) {
   };
 });
 System.register(
-  "DataTypes/string",
+  "datatypes/String",
   ["Encoder", "helpers"],
   function (exports_7, context_7) {
     "use strict";
@@ -624,7 +612,7 @@ System.register(
   },
 );
 System.register(
-  "DataTypes/numbers/uInt",
+  "datatypes/numbers/uInt",
   ["helpers"],
   function (exports_8, context_8) {
     "use strict";
@@ -699,7 +687,7 @@ System.register(
   },
 );
 System.register(
-  "DataTypes/numbers/nInt",
+  "datatypes/numbers/nInt",
   ["helpers"],
   function (exports_9, context_9) {
     "use strict";
@@ -783,7 +771,7 @@ System.register(
   },
 );
 System.register(
-  "DataTypes/numbers/float",
+  "datatypes/numbers/float",
   ["helpers"],
   function (exports_10, context_10) {
     "use strict";
@@ -832,11 +820,11 @@ System.register(
   },
 );
 System.register(
-  "DataTypes/number",
+  "datatypes/number",
   [
-    "DataTypes/numbers/uInt",
-    "DataTypes/numbers/nInt",
-    "DataTypes/numbers/float",
+    "datatypes/numbers/uInt",
+    "datatypes/numbers/nInt",
+    "datatypes/numbers/float",
   ],
   function (exports_11, context_11) {
     "use strict";
@@ -869,7 +857,7 @@ System.register(
     };
   },
 );
-System.register("DataTypes/fixed", [], function (exports_12, context_12) {
+System.register("datatypes/fixed", [], function (exports_12, context_12) {
   "use strict";
   var fixedValueDataType;
   var __moduleName = context_12 && context_12.id;
@@ -893,7 +881,7 @@ System.register("DataTypes/fixed", [], function (exports_12, context_12) {
     },
   };
 });
-System.register("DataTypes/RegExp", [], function (exports_13, context_13) {
+System.register("datatypes/RegExp", [], function (exports_13, context_13) {
   "use strict";
   var RegExpDataType;
   var __moduleName = context_13 && context_13.id;
@@ -925,7 +913,7 @@ System.register("DataTypes/RegExp", [], function (exports_13, context_13) {
     },
   };
 });
-System.register("DataTypes/Error", [], function (exports_14, context_14) {
+System.register("datatypes/Error", [], function (exports_14, context_14) {
   "use strict";
   var ErrorDataType;
   var __moduleName = context_14 && context_14.id;
@@ -970,7 +958,7 @@ System.register("DataTypes/Error", [], function (exports_14, context_14) {
   };
 });
 System.register(
-  "DataTypes/ArrayBuffer",
+  "datatypes/ArrayBuffer",
   ["helpers"],
   function (exports_15, context_15) {
     "use strict";
@@ -1051,7 +1039,7 @@ System.register(
   },
 );
 System.register(
-  "DataTypes/Array",
+  "datatypes/Array",
   ["helpers"],
   function (exports_16, context_16) {
     "use strict";
@@ -1174,7 +1162,7 @@ System.register(
   },
 );
 System.register(
-  "DataTypes/Object",
+  "datatypes/Object",
   ["helpers"],
   function (exports_17, context_17) {
     "use strict";
@@ -1305,7 +1293,7 @@ System.register(
   },
 );
 System.register(
-  "DataTypes/Map",
+  "datatypes/Map",
   ["helpers"],
   function (exports_18, context_18) {
     "use strict";
@@ -1408,7 +1396,7 @@ System.register(
   },
 );
 System.register(
-  "DataTypes/Set",
+  "datatypes/Set",
   ["helpers"],
   function (exports_19, context_19) {
     "use strict";
@@ -1503,13 +1491,59 @@ System.register(
     };
   },
 );
-System.register("DataTypes/BigInt", [], function (exports_20, context_20) {
+System.register("datatypes/BigInt", [], function (exports_20, context_20) {
   "use strict";
   var BigIntDataType;
   var __moduleName = context_20 && context_20.id;
   return {
     setters: [],
     execute: function () {
+      if (!window["BigInt"]) {
+        console.warn(
+          `BigInt polyfill only supports integers up to 53 bits (MAX_SAFE_INTEGER ${Number.MAX_SAFE_INTEGER})`,
+        );
+        class BigInt extends Number {
+          asIntN() {
+            throw Error(`BigInt polyfill does not support toString`);
+          }
+          asUintN() {
+            throw Error(`BigInt polyfill does not support toString`);
+          }
+        }
+        window["BigInt"] = function (value) {
+          return new BigInt(value);
+        };
+        DataView.prototype.getBigInt64 = function (byteOffset) {
+          const n2 = this.getUint32(byteOffset).toString(2);
+          const n1 = this.getUint32(byteOffset + 4).toString(2);
+          const string = `${n2}${n1}`;
+          return parseInt(string, 2);
+        };
+        DataView.prototype.setBigInt64 = function (byteOffset, value) {
+          const string = value.toString(2);
+          const b1 = string.substr(32);
+          const b2 = string.substr(0, 32);
+          const n1 = parseInt(b1, 2);
+          const n2 = parseInt(b2, 2);
+          this.setUint32(byteOffset, n2);
+          this.setUint32(byteOffset + 4, n1);
+        };
+        DataView.prototype.getBigUint64 = function (byteOffset) {
+          const n2 = this.getUint32(byteOffset).toString(2);
+          const n1 = this.getUint32(byteOffset + 4).toString(2);
+          const string = `${n2}${n1}`;
+          return parseInt(string, 2);
+        };
+        DataView.prototype.setBigUint64 = function (byteOffset, value) {
+          const string = value.toString(2);
+          const b1 = string.substr(32);
+          const b2 = string.substr(0, 32);
+          const n1 = parseInt(b1, 2);
+          const n2 = parseInt(b2, 2);
+          this.setUint32(byteOffset, n2);
+          this.setUint32(byteOffset + 4, n1);
+        };
+      }
       exports_20(
         "BigIntDataType",
         BigIntDataType = {
@@ -1538,24 +1572,24 @@ System.register(
     "Coder",
     "Encoder",
     "Decoder",
-    "DataTypes/Date",
-    "DataTypes/string",
-    "DataTypes/number",
-    "DataTypes/fixed",
-    "DataTypes/RegExp",
-    "DataTypes/Error",
-    "DataTypes/ArrayBuffer",
-    "DataTypes/Array",
-    "DataTypes/Object",
-    "DataTypes/Map",
-    "DataTypes/Set",
-    "DataTypes/BigInt",
+    "datatypes/Date",
+    "datatypes/String",
+    "datatypes/number",
+    "datatypes/fixed",
+    "datatypes/RegExp",
+    "datatypes/Error",
+    "datatypes/ArrayBuffer",
+    "datatypes/Array",
+    "datatypes/Object",
+    "datatypes/Map",
+    "datatypes/Set",
+    "datatypes/BigInt",
   ],
   function (exports_21, context_21) {
     "use strict";
     var Coder_ts_1,
       Date_ts_1,
-      string_ts_1,
+      String_ts_1,
       number_ts_1,
       number_ts_2,
       number_ts_3,
@@ -1591,8 +1625,8 @@ System.register(
         function (Date_ts_1_1) {
           Date_ts_1 = Date_ts_1_1;
         },
-        function (string_ts_1_1) {
-          string_ts_1 = string_ts_1_1;
+        function (String_ts_1_1) {
+          String_ts_1 = String_ts_1_1;
         },
         function (number_ts_1_1) {
           number_ts_1 = number_ts_1_1;
@@ -1768,37 +1802,37 @@ System.register(
           [0x7d, ArrayBuffer_ts_1.ArrayBuffer16DataType],
           [0x7e, ArrayBuffer_ts_1.ArrayBuffer32DataType],
           [0x7f, RESERVED],
-          [0x80, string_ts_1.fixedStringDataType(0)],
-          [0x81, string_ts_1.fixedStringDataType(1)],
-          [0x82, string_ts_1.fixedStringDataType(2)],
-          [0x83, string_ts_1.fixedStringDataType(3)],
-          [0x84, string_ts_1.fixedStringDataType(4)],
-          [0x85, string_ts_1.fixedStringDataType(5)],
-          [0x86, string_ts_1.fixedStringDataType(6)],
-          [0x87, string_ts_1.fixedStringDataType(7)],
-          [0x88, string_ts_1.fixedStringDataType(8)],
-          [0x89, string_ts_1.fixedStringDataType(9)],
-          [0x8a, string_ts_1.fixedStringDataType(10)],
-          [0x8b, string_ts_1.fixedStringDataType(11)],
-          [0x8c, string_ts_1.fixedStringDataType(12)],
-          [0x8d, string_ts_1.fixedStringDataType(13)],
-          [0x8e, string_ts_1.fixedStringDataType(14)],
-          [0x8f, string_ts_1.fixedStringDataType(15)],
-          [0x90, string_ts_1.fixedStringDataType(16)],
-          [0x91, string_ts_1.fixedStringDataType(17)],
-          [0x92, string_ts_1.fixedStringDataType(18)],
-          [0x93, string_ts_1.fixedStringDataType(19)],
-          [0x94, string_ts_1.fixedStringDataType(20)],
-          [0x95, string_ts_1.fixedStringDataType(21)],
-          [0x96, string_ts_1.fixedStringDataType(22)],
-          [0x97, string_ts_1.fixedStringDataType(23)],
-          [0x98, string_ts_1.fixedStringDataType(24)],
-          [0x99, string_ts_1.fixedStringDataType(25)],
-          [0x9a, string_ts_1.fixedStringDataType(26)],
-          [0x9b, string_ts_1.fixedStringDataType(27)],
-          [0x9c, string_ts_1.string8DataType],
-          [0x9d, string_ts_1.string16DataType],
-          [0x9e, string_ts_1.string32DataType],
+          [0x80, String_ts_1.fixedStringDataType(0)],
+          [0x81, String_ts_1.fixedStringDataType(1)],
+          [0x82, String_ts_1.fixedStringDataType(2)],
+          [0x83, String_ts_1.fixedStringDataType(3)],
+          [0x84, String_ts_1.fixedStringDataType(4)],
+          [0x85, String_ts_1.fixedStringDataType(5)],
+          [0x86, String_ts_1.fixedStringDataType(6)],
+          [0x87, String_ts_1.fixedStringDataType(7)],
+          [0x88, String_ts_1.fixedStringDataType(8)],
+          [0x89, String_ts_1.fixedStringDataType(9)],
+          [0x8a, String_ts_1.fixedStringDataType(10)],
+          [0x8b, String_ts_1.fixedStringDataType(11)],
+          [0x8c, String_ts_1.fixedStringDataType(12)],
+          [0x8d, String_ts_1.fixedStringDataType(13)],
+          [0x8e, String_ts_1.fixedStringDataType(14)],
+          [0x8f, String_ts_1.fixedStringDataType(15)],
+          [0x90, String_ts_1.fixedStringDataType(16)],
+          [0x91, String_ts_1.fixedStringDataType(17)],
+          [0x92, String_ts_1.fixedStringDataType(18)],
+          [0x93, String_ts_1.fixedStringDataType(19)],
+          [0x94, String_ts_1.fixedStringDataType(20)],
+          [0x95, String_ts_1.fixedStringDataType(21)],
+          [0x96, String_ts_1.fixedStringDataType(22)],
+          [0x97, String_ts_1.fixedStringDataType(23)],
+          [0x98, String_ts_1.fixedStringDataType(24)],
+          [0x99, String_ts_1.fixedStringDataType(25)],
+          [0x9a, String_ts_1.fixedStringDataType(26)],
+          [0x9b, String_ts_1.fixedStringDataType(27)],
+          [0x9c, String_ts_1.string8DataType],
+          [0x9d, String_ts_1.string16DataType],
+          [0x9e, String_ts_1.string32DataType],
           [0x9f, RESERVED],
           [0xa0, Array_ts_1.fixedArrayDataType(0)],
           [0xa1, Array_ts_1.fixedArrayDataType(1)],

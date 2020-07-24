@@ -1,5 +1,7 @@
 import { DataType } from "./DataType.ts";
 
+import "./polyfill.ts";
+
 const decoder = new TextDecoder();
 
 export class Decoder {
@@ -45,10 +47,10 @@ export class Decoder {
     const view = new DataView(buffer);
     return view.getInt32(offset);
   }
-  // static bufferToInt64(buffer: ArrayBuffer, offset: number) {
-  //   const view = new DataView(buffer)
-  //   return view.getBigInt64(offset)
-  // }
+  static bufferToInt64(buffer: ArrayBuffer, offset: number) {
+    const view = new DataView(buffer)
+    return view.getBigInt64(offset)
+  }
 
   static bufferToUint8(buffer: ArrayBuffer, offset: number) {
     const view = new DataView(buffer);
@@ -113,15 +115,14 @@ export class Decoder {
     this.stepBytes(4);
     return result;
   }
-
-  // peekInt64() {
-  //   return Decoder.bufferToInt64(this.buffer, this.index)
-  // }
-  // stepInt64() {
-  //   const result = Decoder.bufferToInt64(this.buffer, this.index)
-  //   this.stepBytes(8)
-  //   return result
-  // }
+  peekInt64() {
+    return Decoder.bufferToInt64(this.buffer, this.index)
+  }
+  stepInt64() {
+    const result = Decoder.bufferToInt64(this.buffer, this.index)
+    this.stepBytes(8)
+    return result
+  }
 
   peekUint8() {
     return Decoder.bufferToUint8(this.buffer, this.index);

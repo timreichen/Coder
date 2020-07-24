@@ -1,5 +1,7 @@
 import { DataType } from "./DataType.ts";
 
+import "./polyfill.ts";
+
 const encoder = new TextEncoder();
 
 export class Encoder {
