@@ -8,7 +8,7 @@ import {
   INT_16_MAX_VALUE,
   INT_32_MIN_VALUE,
   INT_32_MAX_VALUE,
-} from "../../helpers.ts";
+} from "../../_util.ts";
 
 export const int8DataType = {
   test(data: any) {

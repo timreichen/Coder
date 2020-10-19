@@ -1,6 +1,6 @@
 import { Encoder } from "../../Encoder.ts";
 import { Decoder } from "../../Decoder.ts";
-import { range } from "../../helpers.ts";
+import { range } from "../../_util.ts";
 
 export const float32DataType = {
   test(data: any) {

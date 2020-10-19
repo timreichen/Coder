@@ -4,7 +4,7 @@ import {
   UINT_8_MAX_VALUE,
   UINT_16_MAX_VALUE,
   UINT_32_MAX_VALUE,
-} from "../helpers.ts";
+} from "../_util.ts";
 
 export const Map8DataType = {
   test(data: any) {
