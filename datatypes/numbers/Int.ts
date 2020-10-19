@@ -1,13 +1,13 @@
 import { Encoder } from "../../Encoder.ts";
 import { Decoder } from "../../Decoder.ts";
 import {
-  range,
-  INT_8_MIN_VALUE,
-  INT_8_MAX_VALUE,
-  INT_16_MIN_VALUE,
   INT_16_MAX_VALUE,
-  INT_32_MIN_VALUE,
+  INT_16_MIN_VALUE,
   INT_32_MAX_VALUE,
+  INT_32_MIN_VALUE,
+  INT_8_MAX_VALUE,
+  INT_8_MIN_VALUE,
+  range,
 } from "../../_util.ts";
 
 export const int8DataType = {

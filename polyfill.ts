@@ -24,7 +24,8 @@ if (!window["BigInt"]) {
   window["BigInt"] = function (value: number) {
     return new BigInt(value);
   };
-
+}
+if (!DataView.prototype.getBigInt64) {
   DataView.prototype.getBigInt64 = function (byteOffset: number) {
     const n2 = this.getUint32(byteOffset).toString(2);
     const n1 = this.getUint32(byteOffset + 4).toString(2);

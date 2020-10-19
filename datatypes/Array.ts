@@ -1,9 +1,9 @@
 import { Encoder } from "../Encoder.ts";
 import { Decoder } from "../Decoder.ts";
 import {
-  UINT_8_MAX_VALUE,
   UINT_16_MAX_VALUE,
   UINT_32_MAX_VALUE,
+  UINT_8_MAX_VALUE,
 } from "../_util.ts";
 
 export const fixedArrayDataType = (length: number) => ({

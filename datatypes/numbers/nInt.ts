@@ -1,21 +1,21 @@
 import { Encoder } from "../../Encoder.ts";
 import { Decoder } from "../../Decoder.ts";
 import {
-  range,
-  UINT_8_MAX_VALUE,
-  UINT_16_MAX_VALUE,
-  UINT_32_MAX_VALUE,
-  INT_8_MIN_VALUE,
   INT_16_MIN_VALUE,
   INT_32_MIN_VALUE,
+  INT_8_MIN_VALUE,
+  range,
+  UINT_16_MAX_VALUE,
+  UINT_32_MAX_VALUE,
+  UINT_8_MAX_VALUE,
 } from "../../_util.ts";
 import {
-  NINT_8_MIN_VALUE,
-  NINT_8_MAX_VALUE,
-  NINT_16_MIN_VALUE,
   NINT_16_MAX_VALUE,
-  NINT_32_MIN_VALUE,
+  NINT_16_MIN_VALUE,
   NINT_32_MAX_VALUE,
+  NINT_32_MIN_VALUE,
+  NINT_8_MAX_VALUE,
+  NINT_8_MIN_VALUE,
 } from "../../_util.ts";
 
 export const nInt8DataType = {

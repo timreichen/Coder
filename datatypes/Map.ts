@@ -1,9 +1,9 @@
 import { Encoder } from "../Encoder.ts";
 import { Decoder } from "../Decoder.ts";
 import {
-  UINT_8_MAX_VALUE,
   UINT_16_MAX_VALUE,
   UINT_32_MAX_VALUE,
+  UINT_8_MAX_VALUE,
 } from "../_util.ts";
 
 export const Map8DataType = {
@@ -12,8 +12,6 @@ export const Map8DataType = {
   },
   encode(encoder: Encoder, data: Map<any, any>) {
     const length = data.size;
-    console.log(data.size);
-
     return Array.from(data.entries()).reduce(
       (buffer: any, [key, value]) =>
         encoder.combineBuffers(

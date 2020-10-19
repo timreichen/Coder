@@ -1248,12 +1248,15 @@ System.register(
                 Object.keys(data).length === length;
             },
             encode(encoder, data) {
-              return Object.entries(data).reduce((buffer, [key, value]) =>
-                encoder.combineBuffers(
-                  buffer,
-                  encoder.encode(key),
-                  encoder.encode(value),
-                ), new ArrayBuffer(0));
+              return Object.entries(data).reduce(
+                (buffer, [key, value]) =>
+                  encoder.combineBuffers(
+                    buffer,
+                    encoder.encode(key),
+                    encoder.encode(value),
+                  ),
+                new ArrayBuffer(0),
+              );
             },
             decode(decoder) {
               const object = {};
@@ -1371,13 +1374,15 @@ System.register("datatypes/Map", ["_util"], function (exports_18, context_18) {
           },
           encode(encoder, data) {
             const length = data.size;
-            console.log(data.size);
-            return Array.from(data.entries()).reduce((buffer, [key, value]) =>
-              encoder.combineBuffers(
-                buffer,
-                encoder.encode(key),
-                encoder.encode(value),
-              ), encoder.uInt8ToBuffer(length));
+            return Array.from(data.entries()).reduce(
+              (buffer, [key, value]) =>
+                encoder.combineBuffers(
+                  buffer,
+                  encoder.encode(key),
+                  encoder.encode(value),
+                ),
+              encoder.uInt8ToBuffer(length),
+            );
           },
           decode(decoder) {
             let length = decoder.stepUint8();
@@ -1400,12 +1405,15 @@ System.register("datatypes/Map", ["_util"], function (exports_18, context_18) {
           },
           encode(encoder, data) {
             const length = data.size;
-            return Array.from(data.entries()).reduce((buffer, [key, value]) =>
-              encoder.combineBuffers(
-                buffer,
-                encoder.encode(key),
-                encoder.encode(value),
-              ), encoder.uInt16ToBuffer(length));
+            return Array.from(data.entries()).reduce(
+              (buffer, [key, value]) =>
+                encoder.combineBuffers(
+                  buffer,
+                  encoder.encode(key),
+                  encoder.encode(value),
+                ),
+              encoder.uInt16ToBuffer(length),
+            );
           },
           decode(decoder) {
             let length = decoder.stepUint16();
@@ -1428,12 +1436,15 @@ System.register("datatypes/Map", ["_util"], function (exports_18, context_18) {
           },
           encode(encoder, data) {
             const length = data.size;
-            return Array.from(data.entries()).reduce((buffer, [key, value]) =>
-              encoder.combineBuffers(
-                buffer,
-                encoder.encode(key),
-                encoder.encode(value),
-              ), encoder.uInt32ToBuffer(length));
+            return Array.from(data.entries()).reduce(
+              (buffer, [key, value]) =>
+                encoder.combineBuffers(
+                  buffer,
+                  encoder.encode(key),
+                  encoder.encode(value),
+                ),
+              encoder.uInt32ToBuffer(length),
+            );
           },
           decode(decoder) {
             let length = decoder.stepUint32();

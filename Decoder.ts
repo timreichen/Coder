@@ -48,8 +48,8 @@ export class Decoder {
     return view.getInt32(offset);
   }
   static bufferToInt64(buffer: ArrayBuffer, offset: number) {
-    const view = new DataView(buffer)
-    return view.getBigInt64(offset)
+    const view = new DataView(buffer);
+    return view.getBigInt64(offset);
   }
 
   static bufferToUint8(buffer: ArrayBuffer, offset: number) {
@@ -116,12 +116,12 @@ export class Decoder {
     return result;
   }
   peekInt64() {
-    return Decoder.bufferToInt64(this.buffer, this.index)
+    return Decoder.bufferToInt64(this.buffer, this.index);
   }
   stepInt64() {
-    const result = Decoder.bufferToInt64(this.buffer, this.index)
-    this.stepBytes(8)
-    return result
+    const result = Decoder.bufferToInt64(this.buffer, this.index);
+    this.stepBytes(8);
+    return result;
   }
 
   peekUint8() {
