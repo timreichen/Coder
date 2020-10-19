@@ -1,5 +1,9 @@
 import { coder } from "./coder.js";
-const date = new Date(2020, 1, 1, 0, 0, 0, 0);
-const encoded = coder.encode(date);
+
+const data = {
+  hello: "world",
+  array: [true, false, 1.3, BigInt(12n)],
+  date: new Date(),
+};
+const encoded = coder.encode(data);
 const decoded = coder.decode(encoded);
-console.log(date.getTime() === decoded.getTime());

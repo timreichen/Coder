@@ -44,14 +44,15 @@ let System, __instantiate;
 
   function gE(exp) {
     return (id, v) => {
-      v = typeof id === "string" ? { [id]: v } : id;
-      for (const [id, value] of Object.entries(v)) {
+      const e = typeof id === "string" ? { [id]: v } : id;
+      for (const [id, value] of Object.entries(e)) {
         Object.defineProperty(exp, id, {
           value,
           writable: true,
           enumerable: true,
         });
       }
+      return v;
     };
   }
 
@@ -98,12 +99,64 @@ let System, __instantiate;
   };
 })();
 
-System.register("Decoder", [], function (exports_1, context_1) {
+"use strict";
+if (!window["BigInt"]) {
+  console.warn(
+    `BigInt polyfill only supports integers up to 53 bits (MAX_SAFE_INTEGER ${Number.MAX_SAFE_INTEGER})`,
+  );
+  class BigInt extends Number {
+    asIntN() {
+      throw Error(`BigInt polyfill does not support toString`);
+    }
+    asUintN() {
+      throw Error(`BigInt polyfill does not support toString`);
+    }
+  }
+  window["BigInt"] = function (value) {
+    return new BigInt(value);
+  };
+}
+if (!DataView.prototype.getBigInt64) {
+  DataView.prototype.getBigInt64 = function (byteOffset) {
+    const n2 = this.getUint32(byteOffset).toString(2);
+    const n1 = this.getUint32(byteOffset + 4).toString(2);
+    const string = `${n2}${n1}`;
+    return parseInt(string, 2);
+  };
+  DataView.prototype.setBigInt64 = function (byteOffset, value) {
+    const string = value.toString(2);
+    const b1 = string.substr(32);
+    const b2 = string.substr(0, 32);
+    const n1 = parseInt(b1, 2);
+    const n2 = parseInt(b2, 2);
+    this.setUint32(byteOffset, n2);
+    this.setUint32(byteOffset + 4, n1);
+  };
+  DataView.prototype.getBigUint64 = function (byteOffset) {
+    const n2 = this.getUint32(byteOffset).toString(2);
+    const n1 = this.getUint32(byteOffset + 4).toString(2);
+    const string = `${n2}${n1}`;
+    return parseInt(string, 2);
+  };
+  DataView.prototype.setBigUint64 = function (byteOffset, value) {
+    const string = value.toString(2);
+    const b1 = string.substr(32);
+    const b2 = string.substr(0, 32);
+    const n1 = parseInt(b1, 2);
+    const n2 = parseInt(b2, 2);
+    this.setUint32(byteOffset, n2);
+    this.setUint32(byteOffset + 4, n1);
+  };
+}
+System.register("Decoder", ["./polyfill.ts"], function (exports_1, context_1) {
   "use strict";
   var decoder, Decoder;
   var __moduleName = context_1 && context_1.id;
   return {
-    setters: [],
+    setters: [
+      function (_1) {
+      },
+    ],
     execute: function () {
       decoder = new TextDecoder();
       Decoder = class Decoder {
@@ -141,6 +194,10 @@ System.register("Decoder", [], function (exports_1, context_1) {
         static bufferToInt32(buffer, offset) {
           const view = new DataView(buffer);
           return view.getInt32(offset);
+        }
+        static bufferToInt64(buffer, offset) {
+          const view = new DataView(buffer);
+          return view.getBigInt64(offset);
         }
         static bufferToUint8(buffer, offset) {
           const view = new DataView(buffer);
@@ -198,6 +255,14 @@ System.register("Decoder", [], function (exports_1, context_1) {
         stepInt32() {
           const result = Decoder.bufferToInt32(this.buffer, this.index);
           this.stepBytes(4);
+          return result;
+        }
+        peekInt64() {
+          return Decoder.bufferToInt64(this.buffer, this.index);
+        }
+        stepInt64() {
+          const result = Decoder.bufferToInt64(this.buffer, this.index);
+          this.stepBytes(8);
           return result;
         }
         peekUint8() {
@@ -261,12 +326,15 @@ System.register("DataType", [], function (exports_2, context_2) {
     },
   };
 });
-System.register("Encoder", [], function (exports_3, context_3) {
+System.register("Encoder", ["./polyfill.ts"], function (exports_3, context_3) {
   "use strict";
   var encoder, Encoder;
   var __moduleName = context_3 && context_3.id;
   return {
-    setters: [],
+    setters: [
+      function (_2) {
+      },
+    ],
     execute: function () {
       encoder = new TextEncoder();
       Encoder = class Encoder {
@@ -436,7 +504,7 @@ System.register("datatypes/Date", [], function (exports_5, context_5) {
     },
   };
 });
-System.register("helpers", [], function (exports_6, context_6) {
+System.register("_util", [], function (exports_6, context_6) {
   "use strict";
   var _2Pow8,
     _2Pow16,
@@ -510,11 +578,11 @@ System.register("helpers", [], function (exports_6, context_6) {
 });
 System.register(
   "datatypes/String",
-  ["Encoder", "helpers"],
+  ["Encoder", "_util"],
   function (exports_7, context_7) {
     "use strict";
     var Encoder_ts_2,
-      helpers_ts_1,
+      _util_ts_1,
       fixedStringDataType,
       string8DataType,
       string16DataType,
@@ -525,8 +593,8 @@ System.register(
         function (Encoder_ts_2_1) {
           Encoder_ts_2 = Encoder_ts_2_1;
         },
-        function (helpers_ts_1_1) {
-          helpers_ts_1 = helpers_ts_1_1;
+        function (_util_ts_1_1) {
+          _util_ts_1 = _util_ts_1_1;
         },
       ],
       execute: function () {
@@ -535,8 +603,7 @@ System.register(
           fixedStringDataType = (length) => ({
             test(data) {
               return typeof data === "string" &&
-                Encoder_ts_2.Encoder.stringToBuffer(data).byteLength ===
-                  length;
+                Encoder_ts_2.Encoder.stringToBuffer(data).byteLength === length;
             },
             encode(encoder, data) {
               return encoder.stringToBuffer(data);
@@ -552,7 +619,7 @@ System.register(
             test(data) {
               return typeof data === "string" &&
                 Encoder_ts_2.Encoder.stringToBuffer(data).byteLength <=
-                  helpers_ts_1.UINT_8_MAX_VALUE;
+                  _util_ts_1.UINT_8_MAX_VALUE;
             },
             encode(encoder, data) {
               const dataBuffer = encoder.stringToBuffer(data);
@@ -571,7 +638,7 @@ System.register(
             test(data) {
               return typeof data === "string" &&
                 Encoder_ts_2.Encoder.stringToBuffer(data).byteLength <=
-                  helpers_ts_1.UINT_16_MAX_VALUE;
+                  _util_ts_1.UINT_16_MAX_VALUE;
             },
             encode(encoder, data) {
               const dataBuffer = encoder.stringToBuffer(data);
@@ -592,7 +659,7 @@ System.register(
             test(data) {
               return typeof data === "string" &&
                 Encoder_ts_2.Encoder.stringToBuffer(data).byteLength <=
-                  helpers_ts_1.UINT_32_MAX_VALUE;
+                  _util_ts_1.UINT_32_MAX_VALUE;
             },
             encode(encoder, data) {
               const dataBuffer = encoder.stringToBuffer(data);
@@ -613,15 +680,15 @@ System.register(
 );
 System.register(
   "datatypes/numbers/uInt",
-  ["helpers"],
+  ["_util"],
   function (exports_8, context_8) {
     "use strict";
-    var helpers_ts_2, uInt8DataType, uInt16DataType, uInt32DataType;
+    var _util_ts_2, uInt8DataType, uInt16DataType, uInt32DataType;
     var __moduleName = context_8 && context_8.id;
     return {
       setters: [
-        function (helpers_ts_2_1) {
-          helpers_ts_2 = helpers_ts_2_1;
+        function (_util_ts_2_1) {
+          _util_ts_2 = _util_ts_2_1;
         },
       ],
       execute: function () {
@@ -630,10 +697,10 @@ System.register(
           uInt8DataType = {
             test(data) {
               return typeof data === "number" && Number.isInteger(data) &&
-                helpers_ts_2.range(
+                _util_ts_2.range(
                   data,
-                  helpers_ts_2.UINT_8_MIN_VALUE,
-                  helpers_ts_2.UINT_8_MAX_VALUE,
+                  _util_ts_2.UINT_8_MIN_VALUE,
+                  _util_ts_2.UINT_8_MAX_VALUE,
                 );
             },
             encode(encoder, data) {
@@ -649,10 +716,10 @@ System.register(
           uInt16DataType = {
             test(data) {
               return typeof data === "number" && Number.isInteger(data) &&
-                helpers_ts_2.range(
+                _util_ts_2.range(
                   data,
-                  helpers_ts_2.UINT_16_MIN_VALUE,
-                  helpers_ts_2.UINT_16_MAX_VALUE,
+                  _util_ts_2.UINT_16_MIN_VALUE,
+                  _util_ts_2.UINT_16_MAX_VALUE,
                 );
             },
             encode(encoder, data) {
@@ -668,10 +735,10 @@ System.register(
           uInt32DataType = {
             test(data) {
               return typeof data === "number" && Number.isInteger(data) &&
-                helpers_ts_2.range(
+                _util_ts_2.range(
                   data,
-                  helpers_ts_2.UINT_32_MIN_VALUE,
-                  helpers_ts_2.UINT_32_MAX_VALUE,
+                  _util_ts_2.UINT_32_MIN_VALUE,
+                  _util_ts_2.UINT_32_MAX_VALUE,
                 );
             },
             encode(encoder, data) {
@@ -688,20 +755,16 @@ System.register(
 );
 System.register(
   "datatypes/numbers/nInt",
-  ["helpers"],
+  ["_util"],
   function (exports_9, context_9) {
     "use strict";
-    var helpers_ts_3,
-      helpers_ts_4,
-      nInt8DataType,
-      nInt16DataType,
-      nInt32DataType;
+    var _util_ts_3, _util_ts_4, nInt8DataType, nInt16DataType, nInt32DataType;
     var __moduleName = context_9 && context_9.id;
     return {
       setters: [
-        function (helpers_ts_3_1) {
-          helpers_ts_3 = helpers_ts_3_1;
-          helpers_ts_4 = helpers_ts_3_1;
+        function (_util_ts_3_1) {
+          _util_ts_3 = _util_ts_3_1;
+          _util_ts_4 = _util_ts_3_1;
         },
       ],
       execute: function () {
@@ -710,17 +773,17 @@ System.register(
           nInt8DataType = {
             test(data) {
               return typeof data === "number" && Number.isInteger(data) &&
-                helpers_ts_3.range(
+                _util_ts_3.range(
                   data,
-                  helpers_ts_4.NINT_8_MIN_VALUE,
-                  helpers_ts_4.NINT_8_MAX_VALUE,
+                  _util_ts_4.NINT_8_MIN_VALUE,
+                  _util_ts_4.NINT_8_MAX_VALUE,
                 );
             },
             encode(encoder, data) {
-              return encoder.uInt8ToBuffer(data - helpers_ts_3.INT_8_MIN_VALUE);
+              return encoder.uInt8ToBuffer(data - _util_ts_3.INT_8_MIN_VALUE);
             },
             decode(decoder) {
-              return decoder.stepUint8() + helpers_ts_3.INT_8_MIN_VALUE;
+              return decoder.stepUint8() + _util_ts_3.INT_8_MIN_VALUE;
             },
           },
         );
@@ -729,19 +792,17 @@ System.register(
           nInt16DataType = {
             test(data) {
               return typeof data === "number" && Number.isInteger(data) &&
-                helpers_ts_3.range(
+                _util_ts_3.range(
                   data,
-                  helpers_ts_4.NINT_16_MIN_VALUE,
-                  helpers_ts_4.NINT_16_MAX_VALUE,
+                  _util_ts_4.NINT_16_MIN_VALUE,
+                  _util_ts_4.NINT_16_MAX_VALUE,
                 );
             },
             encode(encoder, data) {
-              return encoder.uInt16ToBuffer(
-                data - helpers_ts_3.INT_16_MIN_VALUE,
-              );
+              return encoder.uInt16ToBuffer(data - _util_ts_3.INT_16_MIN_VALUE);
             },
             decode(decoder) {
-              return decoder.stepUint16() + helpers_ts_3.INT_16_MIN_VALUE;
+              return decoder.stepUint16() + _util_ts_3.INT_16_MIN_VALUE;
             },
           },
         );
@@ -750,19 +811,17 @@ System.register(
           nInt32DataType = {
             test(data) {
               return typeof data === "number" && Number.isInteger(data) &&
-                helpers_ts_3.range(
+                _util_ts_3.range(
                   data,
-                  helpers_ts_4.NINT_32_MIN_VALUE,
-                  helpers_ts_4.NINT_32_MAX_VALUE,
+                  _util_ts_4.NINT_32_MIN_VALUE,
+                  _util_ts_4.NINT_32_MAX_VALUE,
                 );
             },
             encode(encoder, data) {
-              return encoder.uInt32ToBuffer(
-                data - helpers_ts_3.INT_32_MIN_VALUE,
-              );
+              return encoder.uInt32ToBuffer(data - _util_ts_3.INT_32_MIN_VALUE);
             },
             decode(decoder) {
-              return decoder.stepUint32() + helpers_ts_3.INT_32_MIN_VALUE;
+              return decoder.stepUint32() + _util_ts_3.INT_32_MIN_VALUE;
             },
           },
         );
@@ -772,15 +831,15 @@ System.register(
 );
 System.register(
   "datatypes/numbers/float",
-  ["helpers"],
+  ["_util"],
   function (exports_10, context_10) {
     "use strict";
-    var helpers_ts_5, float32DataType, float64DataType;
+    var _util_ts_5, float32DataType, float64DataType;
     var __moduleName = context_10 && context_10.id;
     return {
       setters: [
-        function (helpers_ts_5_1) {
-          helpers_ts_5 = helpers_ts_5_1;
+        function (_util_ts_5_1) {
+          _util_ts_5 = _util_ts_5_1;
         },
       ],
       execute: function () {
@@ -790,7 +849,7 @@ System.register(
             test(data) {
               return typeof data === "number" && !Number.isInteger(data) &&
                 Math.fround(data) === data &&
-                helpers_ts_5.range(data, -1.7E+308, 1.7E+308);
+                _util_ts_5.range(data, -1.7E+308, 1.7E+308);
             },
             encode(encoder, data) {
               return encoder.float32ToBuffer(data);
@@ -805,7 +864,7 @@ System.register(
           float64DataType = {
             test(data) {
               return typeof data === "number" && !Number.isInteger(data) &&
-                helpers_ts_5.range(data, -3.4E+38, 3.4E+38);
+                _util_ts_5.range(data, -3.4E+38, 3.4E+38);
             },
             encode(encoder, data) {
               return encoder.float64ToBuffer(data);
@@ -959,18 +1018,18 @@ System.register("datatypes/Error", [], function (exports_14, context_14) {
 });
 System.register(
   "datatypes/ArrayBuffer",
-  ["helpers"],
+  ["_util"],
   function (exports_15, context_15) {
     "use strict";
-    var helpers_ts_6,
+    var _util_ts_6,
       ArrayBuffer8DataType,
       ArrayBuffer16DataType,
       ArrayBuffer32DataType;
     var __moduleName = context_15 && context_15.id;
     return {
       setters: [
-        function (helpers_ts_6_1) {
-          helpers_ts_6 = helpers_ts_6_1;
+        function (_util_ts_6_1) {
+          _util_ts_6 = _util_ts_6_1;
         },
       ],
       execute: function () {
@@ -979,7 +1038,7 @@ System.register(
           ArrayBuffer8DataType = {
             test(data) {
               return data instanceof ArrayBuffer &&
-                data.byteLength <= helpers_ts_6.UINT_8_MAX_VALUE;
+                data.byteLength <= _util_ts_6.UINT_8_MAX_VALUE;
             },
             encode(encoder, data) {
               const length = data.byteLength;
@@ -999,7 +1058,7 @@ System.register(
           ArrayBuffer16DataType = {
             test(data) {
               return data instanceof ArrayBuffer &&
-                data.byteLength <= helpers_ts_6.UINT_16_MAX_VALUE;
+                data.byteLength <= _util_ts_6.UINT_16_MAX_VALUE;
             },
             encode(encoder, data) {
               const length = data.byteLength;
@@ -1019,7 +1078,7 @@ System.register(
           ArrayBuffer32DataType = {
             test(data) {
               return data instanceof ArrayBuffer &&
-                data.byteLength <= helpers_ts_6.UINT_32_MAX_VALUE;
+                data.byteLength <= _util_ts_6.UINT_32_MAX_VALUE;
             },
             encode(encoder, data) {
               const length = data.byteLength;
@@ -1040,10 +1099,10 @@ System.register(
 );
 System.register(
   "datatypes/Array",
-  ["helpers"],
+  ["_util"],
   function (exports_16, context_16) {
     "use strict";
-    var helpers_ts_7,
+    var _util_ts_7,
       fixedArrayDataType,
       Array8DataType,
       Array16DataType,
@@ -1051,8 +1110,8 @@ System.register(
     var __moduleName = context_16 && context_16.id;
     return {
       setters: [
-        function (helpers_ts_7_1) {
-          helpers_ts_7 = helpers_ts_7_1;
+        function (_util_ts_7_1) {
+          _util_ts_7 = _util_ts_7_1;
         },
       ],
       execute: function () {
@@ -1084,7 +1143,7 @@ System.register(
           Array8DataType = {
             test(data) {
               return data instanceof Array &&
-                data.length <= helpers_ts_7.UINT_8_MAX_VALUE;
+                data.length <= _util_ts_7.UINT_8_MAX_VALUE;
             },
             encode(encoder, data) {
               const length = data.length;
@@ -1110,7 +1169,7 @@ System.register(
           Array16DataType = {
             test(data) {
               return data instanceof Array &&
-                data.length <= helpers_ts_7.UINT_16_MAX_VALUE;
+                data.length <= _util_ts_7.UINT_16_MAX_VALUE;
             },
             encode(encoder, data) {
               const length = data.length;
@@ -1136,7 +1195,7 @@ System.register(
           Array32DataType = {
             test(data) {
               return data instanceof Array &&
-                data.length <= helpers_ts_7.UINT_32_MAX_VALUE;
+                data.length <= _util_ts_7.UINT_32_MAX_VALUE;
             },
             encode(encoder, data) {
               const length = data.length;
@@ -1163,10 +1222,10 @@ System.register(
 );
 System.register(
   "datatypes/Object",
-  ["helpers"],
+  ["_util"],
   function (exports_17, context_17) {
     "use strict";
-    var helpers_ts_8,
+    var _util_ts_8,
       getType,
       fixedObjectDataType,
       Object8DataType,
@@ -1175,8 +1234,8 @@ System.register(
     var __moduleName = context_17 && context_17.id;
     return {
       setters: [
-        function (helpers_ts_8_1) {
-          helpers_ts_8 = helpers_ts_8_1;
+        function (_util_ts_8_1) {
+          _util_ts_8 = _util_ts_8_1;
         },
       ],
       execute: function () {
@@ -1212,7 +1271,7 @@ System.register(
           Object8DataType = {
             test(data) {
               return getType(data) === "Object" &&
-                Object.keys(data).length <= helpers_ts_8.UINT_8_MAX_VALUE;
+                Object.keys(data).length <= _util_ts_8.UINT_8_MAX_VALUE;
             },
             encode(encoder, data) {
               const length = Object.keys(data).length;
@@ -1239,7 +1298,7 @@ System.register(
           Object16DataType = {
             test(data) {
               return getType(data) === "Object" &&
-                Object.keys(data).length <= helpers_ts_8.UINT_16_MAX_VALUE;
+                Object.keys(data).length <= _util_ts_8.UINT_16_MAX_VALUE;
             },
             encode(encoder, data) {
               const length = Object.keys(data).length;
@@ -1266,7 +1325,7 @@ System.register(
           Object32DataType = {
             test(data) {
               return getType(data) === "Object" &&
-                Object.keys(data).length <= helpers_ts_8.UINT_32_MAX_VALUE;
+                Object.keys(data).length <= _util_ts_8.UINT_32_MAX_VALUE;
             },
             encode(encoder, data) {
               const length = Object.keys(data).length;
@@ -1292,205 +1351,197 @@ System.register(
     };
   },
 );
-System.register(
-  "datatypes/Map",
-  ["helpers"],
-  function (exports_18, context_18) {
-    "use strict";
-    var helpers_ts_9, Map8DataType, Map16DataType, Map32DataType;
-    var __moduleName = context_18 && context_18.id;
-    return {
-      setters: [
-        function (helpers_ts_9_1) {
-          helpers_ts_9 = helpers_ts_9_1;
-        },
-      ],
-      execute: function () {
-        exports_18(
-          "Map8DataType",
-          Map8DataType = {
-            test(data) {
-              return data instanceof Map &&
-                data.size <= helpers_ts_9.UINT_8_MAX_VALUE;
-            },
-            encode(encoder, data) {
-              const length = data.size;
-              console.log(data.size);
-              return Array.from(data.entries()).reduce((buffer, [key, value]) =>
-                encoder.combineBuffers(
-                  buffer,
-                  encoder.encode(key),
-                  encoder.encode(value),
-                ), encoder.uInt8ToBuffer(length));
-            },
-            decode(decoder) {
-              let length = decoder.stepUint8();
-              const map = new Map();
-              while (length--) {
-                const key = decoder.next();
-                const value = decoder.next();
-                map.set(key, value);
-              }
-              return map;
-            },
-          },
-        );
-        exports_18(
-          "Map16DataType",
-          Map16DataType = {
-            test(data) {
-              return data instanceof Map &&
-                data.size <= helpers_ts_9.UINT_16_MAX_VALUE;
-            },
-            encode(encoder, data) {
-              const length = data.size;
-              return Array.from(data.entries()).reduce((buffer, [key, value]) =>
-                encoder.combineBuffers(
-                  buffer,
-                  encoder.encode(key),
-                  encoder.encode(value),
-                ), encoder.uInt16ToBuffer(length));
-            },
-            decode(decoder) {
-              let length = decoder.stepUint16();
-              const map = new Map();
-              while (length--) {
-                const key = decoder.next();
-                const value = decoder.next();
-                map.set(key, value);
-              }
-              return map;
-            },
-          },
-        );
-        exports_18(
-          "Map32DataType",
-          Map32DataType = {
-            test(data) {
-              return data instanceof Map &&
-                data.size <= helpers_ts_9.UINT_32_MAX_VALUE;
-            },
-            encode(encoder, data) {
-              const length = data.size;
-              return Array.from(data.entries()).reduce((buffer, [key, value]) =>
-                encoder.combineBuffers(
-                  buffer,
-                  encoder.encode(key),
-                  encoder.encode(value),
-                ), encoder.uInt32ToBuffer(length));
-            },
-            decode(decoder) {
-              let length = decoder.stepUint32();
-              const map = new Map();
-              while (length--) {
-                const key = decoder.next();
-                const value = decoder.next();
-                map.set(key, value);
-              }
-              return map;
-            },
-          },
-        );
+System.register("datatypes/Map", ["_util"], function (exports_18, context_18) {
+  "use strict";
+  var _util_ts_9, Map8DataType, Map16DataType, Map32DataType;
+  var __moduleName = context_18 && context_18.id;
+  return {
+    setters: [
+      function (_util_ts_9_1) {
+        _util_ts_9 = _util_ts_9_1;
       },
-    };
-  },
-);
-System.register(
-  "datatypes/Set",
-  ["helpers"],
-  function (exports_19, context_19) {
-    "use strict";
-    var helpers_ts_10, Set8DataType, Set16DataType, Set32DataType;
-    var __moduleName = context_19 && context_19.id;
-    return {
-      setters: [
-        function (helpers_ts_10_1) {
-          helpers_ts_10 = helpers_ts_10_1;
+    ],
+    execute: function () {
+      exports_18(
+        "Map8DataType",
+        Map8DataType = {
+          test(data) {
+            return data instanceof Map &&
+              data.size <= _util_ts_9.UINT_8_MAX_VALUE;
+          },
+          encode(encoder, data) {
+            const length = data.size;
+            console.log(data.size);
+            return Array.from(data.entries()).reduce((buffer, [key, value]) =>
+              encoder.combineBuffers(
+                buffer,
+                encoder.encode(key),
+                encoder.encode(value),
+              ), encoder.uInt8ToBuffer(length));
+          },
+          decode(decoder) {
+            let length = decoder.stepUint8();
+            const map = new Map();
+            while (length--) {
+              const key = decoder.next();
+              const value = decoder.next();
+              map.set(key, value);
+            }
+            return map;
+          },
         },
-      ],
-      execute: function () {
-        exports_19(
-          "Set8DataType",
-          Set8DataType = {
-            test(data) {
-              return data instanceof Set &&
-                data.size <= helpers_ts_10.UINT_8_MAX_VALUE;
-            },
-            encode(encoder, data) {
-              const length = data.size;
-              return data.reduce(
-                (buffer, value) =>
-                  encoder.combineBuffers(buffer, encoder.encode(value)),
-                encoder.uInt8ToBuffer(length),
-              );
-            },
-            decode(decoder) {
-              let length = decoder.stepUint8();
-              const set = new Set();
-              while (length--) {
-                const value = decoder.next();
-                set.add(value);
-              }
-              return set;
-            },
+      );
+      exports_18(
+        "Map16DataType",
+        Map16DataType = {
+          test(data) {
+            return data instanceof Map &&
+              data.size <= _util_ts_9.UINT_16_MAX_VALUE;
           },
-        );
-        exports_19(
-          "Set16DataType",
-          Set16DataType = {
-            test(data) {
-              return data instanceof Set &&
-                data.size <= helpers_ts_10.UINT_16_MAX_VALUE;
-            },
-            encode(encoder, data) {
-              const length = data.size;
-              return data.reduce(
-                (buffer, value) =>
-                  encoder.combineBuffers(buffer, encoder.encode(value)),
-                encoder.uInt16ToBuffer(length),
-              );
-            },
-            decode(decoder) {
-              let length = decoder.stepUint16();
-              const set = new Set();
-              while (length--) {
-                const value = decoder.next();
-                set.add(value);
-              }
-              return set;
-            },
+          encode(encoder, data) {
+            const length = data.size;
+            return Array.from(data.entries()).reduce((buffer, [key, value]) =>
+              encoder.combineBuffers(
+                buffer,
+                encoder.encode(key),
+                encoder.encode(value),
+              ), encoder.uInt16ToBuffer(length));
           },
-        );
-        exports_19(
-          "Set32DataType",
-          Set32DataType = {
-            test(data) {
-              return data instanceof Set &&
-                data.size <= helpers_ts_10.UINT_32_MAX_VALUE;
-            },
-            encode(encoder, data) {
-              const length = data.size;
-              return data.reduce(
-                (buffer, value) =>
-                  encoder.combineBuffers(buffer, encoder.encode(value)),
-                encoder.uInt32ToBuffer(length),
-              );
-            },
-            decode(decoder) {
-              let length = decoder.stepUint32();
-              const set = new Set();
-              while (length--) {
-                const value = decoder.next();
-                set.add(value);
-              }
-              return set;
-            },
+          decode(decoder) {
+            let length = decoder.stepUint16();
+            const map = new Map();
+            while (length--) {
+              const key = decoder.next();
+              const value = decoder.next();
+              map.set(key, value);
+            }
+            return map;
           },
-        );
+        },
+      );
+      exports_18(
+        "Map32DataType",
+        Map32DataType = {
+          test(data) {
+            return data instanceof Map &&
+              data.size <= _util_ts_9.UINT_32_MAX_VALUE;
+          },
+          encode(encoder, data) {
+            const length = data.size;
+            return Array.from(data.entries()).reduce((buffer, [key, value]) =>
+              encoder.combineBuffers(
+                buffer,
+                encoder.encode(key),
+                encoder.encode(value),
+              ), encoder.uInt32ToBuffer(length));
+          },
+          decode(decoder) {
+            let length = decoder.stepUint32();
+            const map = new Map();
+            while (length--) {
+              const key = decoder.next();
+              const value = decoder.next();
+              map.set(key, value);
+            }
+            return map;
+          },
+        },
+      );
+    },
+  };
+});
+System.register("datatypes/Set", ["_util"], function (exports_19, context_19) {
+  "use strict";
+  var _util_ts_10, Set8DataType, Set16DataType, Set32DataType;
+  var __moduleName = context_19 && context_19.id;
+  return {
+    setters: [
+      function (_util_ts_10_1) {
+        _util_ts_10 = _util_ts_10_1;
       },
-    };
-  },
-);
+    ],
+    execute: function () {
+      exports_19(
+        "Set8DataType",
+        Set8DataType = {
+          test(data) {
+            return data instanceof Set &&
+              data.size <= _util_ts_10.UINT_8_MAX_VALUE;
+          },
+          encode(encoder, data) {
+            const length = data.size;
+            return data.reduce(
+              (buffer, value) =>
+                encoder.combineBuffers(buffer, encoder.encode(value)),
+              encoder.uInt8ToBuffer(length),
+            );
+          },
+          decode(decoder) {
+            let length = decoder.stepUint8();
+            const set = new Set();
+            while (length--) {
+              const value = decoder.next();
+              set.add(value);
+            }
+            return set;
+          },
+        },
+      );
+      exports_19(
+        "Set16DataType",
+        Set16DataType = {
+          test(data) {
+            return data instanceof Set &&
+              data.size <= _util_ts_10.UINT_16_MAX_VALUE;
+          },
+          encode(encoder, data) {
+            const length = data.size;
+            return data.reduce(
+              (buffer, value) =>
+                encoder.combineBuffers(buffer, encoder.encode(value)),
+              encoder.uInt16ToBuffer(length),
+            );
+          },
+          decode(decoder) {
+            let length = decoder.stepUint16();
+            const set = new Set();
+            while (length--) {
+              const value = decoder.next();
+              set.add(value);
+            }
+            return set;
+          },
+        },
+      );
+      exports_19(
+        "Set32DataType",
+        Set32DataType = {
+          test(data) {
+            return data instanceof Set &&
+              data.size <= _util_ts_10.UINT_32_MAX_VALUE;
+          },
+          encode(encoder, data) {
+            const length = data.size;
+            return data.reduce(
+              (buffer, value) =>
+                encoder.combineBuffers(buffer, encoder.encode(value)),
+              encoder.uInt32ToBuffer(length),
+            );
+          },
+          decode(decoder) {
+            let length = decoder.stepUint32();
+            const set = new Set();
+            while (length--) {
+              const value = decoder.next();
+              set.add(value);
+            }
+            return set;
+          },
+        },
+      );
+    },
+  };
+});
 System.register("datatypes/BigInt", [], function (exports_20, context_20) {
   "use strict";
   var BigIntDataType;
@@ -1498,52 +1549,6 @@ System.register("datatypes/BigInt", [], function (exports_20, context_20) {
   return {
     setters: [],
     execute: function () {
-      if (!window["BigInt"]) {
-        console.warn(
-          `BigInt polyfill only supports integers up to 53 bits (MAX_SAFE_INTEGER ${Number.MAX_SAFE_INTEGER})`,
-        );
-        class BigInt extends Number {
-          asIntN() {
-            throw Error(`BigInt polyfill does not support toString`);
-          }
-          asUintN() {
-            throw Error(`BigInt polyfill does not support toString`);
-          }
-        }
-        window["BigInt"] = function (value) {
-          return new BigInt(value);
-        };
-        DataView.prototype.getBigInt64 = function (byteOffset) {
-          const n2 = this.getUint32(byteOffset).toString(2);
-          const n1 = this.getUint32(byteOffset + 4).toString(2);
-          const string = `${n2}${n1}`;
-          return parseInt(string, 2);
-        };
-        DataView.prototype.setBigInt64 = function (byteOffset, value) {
-          const string = value.toString(2);
-          const b1 = string.substr(32);
-          const b2 = string.substr(0, 32);
-          const n1 = parseInt(b1, 2);
-          const n2 = parseInt(b2, 2);
-          this.setUint32(byteOffset, n2);
-          this.setUint32(byteOffset + 4, n1);
-        };
-        DataView.prototype.getBigUint64 = function (byteOffset) {
-          const n2 = this.getUint32(byteOffset).toString(2);
-          const n1 = this.getUint32(byteOffset + 4).toString(2);
-          const string = `${n2}${n1}`;
-          return parseInt(string, 2);
-        };
-        DataView.prototype.setBigUint64 = function (byteOffset, value) {
-          const string = value.toString(2);
-          const b1 = string.substr(32);
-          const b2 = string.substr(0, 32);
-          const n1 = parseInt(b1, 2);
-          const n2 = parseInt(b2, 2);
-          this.setUint32(byteOffset, n2);
-          this.setUint32(byteOffset + 4, n1);
-        };
-      }
       exports_20(
         "BigIntDataType",
         BigIntDataType = {
