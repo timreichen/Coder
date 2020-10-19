@@ -49,7 +49,7 @@ Coder supports lots of types out of the box:
 * [boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
 * [number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)
 * [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)
-  **Limitation**: Webkit does not yet support ```BigInt```. Coder uses a small polyfill with limitations for DataView ```getBigInt64```, ```setBigInt64```, ```getBigUint64```, ```setBigUint64```.
+  **Limitation**: BigInt is not fully supported by all browsers. Coder uses a small polyfill with limitations for BigInt, DataView ```getBigInt64```, ```setBigInt64```, ```getBigUint64``` and ```setBigUint64```.
   <br>
 * [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)
 
