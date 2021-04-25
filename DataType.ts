@@ -1,8 +1,12 @@
-import { Encoder } from "./Encoder.ts";
-import { Decoder } from "./Decoder.ts";
+import type { Encoder } from "./Encoder.ts";
+import type { Decoder } from "./Decoder.ts";
 
 export interface DataType {
-  test(data: any): boolean;
-  encode(encoder: Encoder, data: any, id?: number): ArrayBuffer;
+  test(data: unknown): boolean;
+  encode(encoder: Encoder, data: unknown, id?: number): ArrayBuffer;
+  // deno-lint-ignore no-explicit-any
   decode(decoder: Decoder, id?: number): any;
+}
+
+export class DataType {
 }

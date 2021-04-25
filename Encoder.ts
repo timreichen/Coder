@@ -1,7 +1,5 @@
 import { DataType } from "./DataType.ts";
 
-import "./polyfill.ts";
-
 const encoder = new TextEncoder();
 
 export class Encoder {
@@ -10,12 +8,15 @@ export class Encoder {
     this.dataTypes = dataTypes;
   }
 
-  register(id: number, dataType: DataType) {
+  set(id: number, dataType: DataType) {
     this.dataTypes.set(id, dataType);
   }
+  delete(id: number) {
+    this.dataTypes.delete(id);
+  }
 
-  encode(data: any): ArrayBuffer {
-    for (let [id, dataType] of this.dataTypes.entries()) {
+  encode(data: unknown): ArrayBuffer {
+    for (const [id, dataType] of this.dataTypes.entries()) {
       if (dataType.test(data)) {
         const idBuffer = this.uInt8ToBuffer(id);
         return this.combineBuffers(idBuffer, dataType.encode(this, data, id));

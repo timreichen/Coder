@@ -10,15 +10,21 @@ export class Coder {
     this.decoder = new Decoder(dataTypes);
   }
 
-  register(id: number, dataType: DataType) {
-    this.encoder.register(id, dataType);
-    this.decoder.register(id, dataType);
+  set(id: number, dataType: DataType) {
+    this.encoder.set(id, dataType);
+    this.decoder.set(id, dataType);
   }
 
-  encode(data: any): ArrayBuffer {
+  delete(id: number, dataType: DataType) {
+    this.encoder.set(id, dataType);
+    this.decoder.set(id, dataType);
+  }
+
+  encode(data: unknown): ArrayBuffer {
     return this.encoder.encode(data);
   }
 
+  // deno-lint-ignore no-explicit-any
   decode(buffer: ArrayBuffer): any {
     return this.decoder.decode(buffer);
   }

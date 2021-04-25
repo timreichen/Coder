@@ -1,7 +1,5 @@
 import { DataType } from "./DataType.ts";
 
-import "./polyfill.ts";
-
 const decoder = new TextDecoder();
 
 export class Decoder {
@@ -17,19 +15,21 @@ export class Decoder {
     this.buffer = new ArrayBuffer(this.length);
   }
 
-  register(id: number, dataType: DataType) {
+  set(id: number, dataType: DataType) {
     this.dataTypes.set(id, dataType);
   }
+  delete(id: number) {
+    this.dataTypes.delete(id);
+  }
 
-  decode(buffer: ArrayBuffer, index = 0): any {
+  decode(buffer: ArrayBuffer, index = 0) {
     this.buffer = buffer;
     this.index = index;
-    const arrayBuffer = new Uint8Array(buffer);
-    this.length = arrayBuffer.length;
+    this.length = buffer.byteLength;
     const id = this.stepUint8();
     const dataType = this.dataTypes.get(id);
     if (!dataType) {
-      throw Error(`dataType '${id}' at index '${index}' is not supported`);
+      throw Error(`dataType is not supported: ${id}`);
     }
     return dataType.decode(this, id);
   }

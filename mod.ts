@@ -1,26 +1,26 @@
 import { Coder } from "./Coder.ts";
+export { Coder } from "./Coder.ts";
 export { Encoder } from "./Encoder.ts";
 export { Decoder } from "./Decoder.ts";
 import { DateDataType } from "./datatypes/Date.ts";
 export { DateDataType };
-
 import {
   fixedStringDataType,
-  string16DataType,
-  string32DataType,
-  string8DataType,
+  String16DataType,
+  String32DataType,
+  String8DataType,
 } from "./datatypes/String.ts";
 import {
-  uInt16DataType,
-  uInt32DataType,
-  uInt8DataType,
-} from "./datatypes/number.ts";
+  Uint16DataType,
+  Uint32DataType,
+  Uint8DataType,
+} from "./datatypes/Uint.ts";
 import {
-  nInt16DataType,
-  nInt32DataType,
-  nInt8DataType,
-} from "./datatypes/number.ts";
-import { float32DataType, float64DataType } from "./datatypes/number.ts";
+  Nint16DataType,
+  Nint32DataType,
+  Nint8DataType,
+} from "./datatypes/Nint.ts";
+import { Float32DataType, Float64DataType } from "./datatypes/Float.ts";
 
 import { fixedValueDataType } from "./datatypes/fixed.ts";
 import { RegExpDataType } from "./datatypes/RegExp.ts";
@@ -45,17 +45,17 @@ import {
 import { Map16DataType, Map32DataType, Map8DataType } from "./datatypes/Map.ts";
 import { Set16DataType, Set32DataType, Set8DataType } from "./datatypes/Set.ts";
 import { BigIntDataType } from "./datatypes/BigInt.ts";
+import { DataType } from "./DataType.ts";
+import { NaNDataType } from "./datatypes/NaN.ts";
 
-const RESERVED = {
+class VoidDataType extends DataType {
   test() {
     return false;
-  },
-  encode() {
-    return new ArrayBuffer(0);
-  },
-  decode() {},
-};
-const CUSTOM = RESERVED;
+  }
+}
+
+const RESERVED = new VoidDataType();
+const CUSTOM = new VoidDataType();
 
 const map = new Map([
   [0x00, fixedValueDataType(0)],
@@ -104,9 +104,9 @@ const map = new Map([
   [0x29, fixedValueDataType(41)],
   [0x2a, fixedValueDataType(42)],
   [0x2b, fixedValueDataType(43)],
-  [0x2c, uInt8DataType],
-  [0x2d, uInt16DataType],
-  [0x2e, uInt32DataType],
+  [0x2c, new Uint8DataType()],
+  [0x2d, new Uint16DataType()],
+  [0x2e, new Uint32DataType()],
   [0x2f, RESERVED],
 
   [0x30, fixedValueDataType(-1)],
@@ -155,31 +155,31 @@ const map = new Map([
   [0x59, fixedValueDataType(-42)],
   [0x5a, fixedValueDataType(-43)],
   [0x5b, fixedValueDataType(-44)],
-  [0x5c, nInt8DataType],
-  [0x5d, nInt16DataType],
-  [0x5e, nInt32DataType],
+  [0x5c, new Nint8DataType()],
+  [0x5d, new Nint16DataType()],
+  [0x5e, new Nint32DataType()],
   [0x5f, RESERVED],
 
-  [0x60, BigIntDataType],
+  [0x60, new BigIntDataType()],
   [0x61, RESERVED],
-  [0x62, float32DataType],
-  [0x63, float64DataType],
+  [0x62, new Float32DataType()],
+  [0x63, new Float64DataType()],
   [0x64, fixedValueDataType(null)],
   [0x65, fixedValueDataType(undefined)],
   [0x66, fixedValueDataType(true)],
   [0x67, fixedValueDataType(false)],
-  [0x68, RESERVED],
-  [0x69, RESERVED],
-  [0x6a, RESERVED],
+  [0x68, fixedValueDataType(Infinity)],
+  [0x69, fixedValueDataType(-Infinity)],
+  [0x6a, new NaNDataType()],
   [0x6b, RESERVED],
   [0x6c, RESERVED],
   [0x6d, RESERVED],
   [0x6e, RESERVED],
   [0x6f, RESERVED],
 
-  [0x70, DateDataType],
-  [0x71, RegExpDataType],
-  [0x72, ErrorDataType],
+  [0x70, new DateDataType()],
+  [0x71, new RegExpDataType()],
+  [0x72, new ErrorDataType()],
   [0x73, RESERVED],
   [0x74, RESERVED],
   [0x75, RESERVED],
@@ -189,9 +189,9 @@ const map = new Map([
   [0x79, RESERVED],
   [0x7a, RESERVED],
   [0x7b, RESERVED],
-  [0x7c, ArrayBuffer8DataType],
-  [0x7d, ArrayBuffer16DataType],
-  [0x7e, ArrayBuffer32DataType],
+  [0x7c, new ArrayBuffer8DataType()],
+  [0x7d, new ArrayBuffer16DataType()],
+  [0x7e, new ArrayBuffer32DataType()],
   [0x7f, RESERVED],
 
   [0x80, fixedStringDataType(0)],
@@ -223,9 +223,9 @@ const map = new Map([
   [0x99, fixedStringDataType(25)],
   [0x9a, fixedStringDataType(26)],
   [0x9b, fixedStringDataType(27)],
-  [0x9c, string8DataType],
-  [0x9d, string16DataType],
-  [0x9e, string32DataType],
+  [0x9c, new String8DataType()],
+  [0x9d, new String16DataType()],
+  [0x9e, new String32DataType()],
   [0x9f, RESERVED],
 
   [0xa0, fixedArrayDataType(0)],
@@ -240,52 +240,52 @@ const map = new Map([
   [0xa9, fixedArrayDataType(9)],
   [0xaa, fixedArrayDataType(10)],
   [0xab, fixedArrayDataType(11)],
-  [0xac, Array8DataType],
-  [0xad, Array16DataType],
-  [0xae, Array32DataType],
+  [0xac, new Array8DataType()],
+  [0xad, new Array16DataType()],
+  [0xae, new Array32DataType()],
   [0xaf, RESERVED],
 
-  [0xb0, fixedObjectDataType(0)],
-  [0xb1, fixedObjectDataType(1)],
-  [0xb2, fixedObjectDataType(2)],
-  [0xb3, fixedObjectDataType(3)],
-  [0xb4, fixedObjectDataType(4)],
-  [0xb5, fixedObjectDataType(5)],
-  [0xb6, fixedObjectDataType(6)],
-  [0xb7, fixedObjectDataType(7)],
-  [0xb8, fixedObjectDataType(8)],
-  [0xb9, fixedObjectDataType(9)],
-  [0xba, fixedObjectDataType(10)],
-  [0xbb, fixedObjectDataType(11)],
-  [0xbc, Object8DataType],
-  [0xbd, Object16DataType],
-  [0xbe, Object32DataType],
+  [0xb0, RESERVED],
+  [0xb1, RESERVED],
+  [0xb2, RESERVED],
+  [0xb3, RESERVED],
+  [0xb4, RESERVED],
+  [0xb5, RESERVED],
+  [0xb6, RESERVED],
+  [0xb7, RESERVED],
+  [0xb8, RESERVED],
+  [0xb9, RESERVED],
+  [0xba, RESERVED],
+  [0xbb, RESERVED],
+  [0xbc, RESERVED],
+  [0xbd, RESERVED],
+  [0xbe, RESERVED],
   [0xbf, RESERVED],
 
-  [0xc0, Map8DataType],
-  [0xc1, Map16DataType],
-  [0xc2, Map32DataType],
-  [0xc3, RESERVED],
-  [0xc4, Set8DataType],
-  [0xc5, Set16DataType],
-  [0xc6, Set32DataType],
-  [0xc7, RESERVED],
-  [0xc8, RESERVED],
-  [0xc9, RESERVED],
-  [0xca, RESERVED],
-  [0xcb, RESERVED],
-  [0xcc, RESERVED],
-  [0xcd, RESERVED],
-  [0xce, RESERVED],
+  [0xc0, fixedObjectDataType(0)],
+  [0xc1, fixedObjectDataType(1)],
+  [0xc2, fixedObjectDataType(2)],
+  [0xc3, fixedObjectDataType(3)],
+  [0xc4, fixedObjectDataType(4)],
+  [0xc5, fixedObjectDataType(5)],
+  [0xc6, fixedObjectDataType(6)],
+  [0xc7, fixedObjectDataType(7)],
+  [0xc8, fixedObjectDataType(8)],
+  [0xc9, fixedObjectDataType(9)],
+  [0xca, fixedObjectDataType(10)],
+  [0xcb, fixedObjectDataType(11)],
+  [0xcc, new Object8DataType()],
+  [0xcd, new Object16DataType()],
+  [0xce, new Object32DataType()],
   [0xcf, RESERVED],
 
-  [0xd0, RESERVED],
-  [0xd1, RESERVED],
-  [0xd2, RESERVED],
+  [0xd0, new Map8DataType()],
+  [0xd1, new Map16DataType()],
+  [0xd2, new Map32DataType()],
   [0xd3, RESERVED],
-  [0xd4, RESERVED],
-  [0xd5, RESERVED],
-  [0xd6, RESERVED],
+  [0xd4, new Set8DataType()],
+  [0xd5, new Set16DataType()],
+  [0xd6, new Set32DataType()],
   [0xd7, RESERVED],
   [0xd8, RESERVED],
   [0xd9, RESERVED],
