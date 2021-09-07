@@ -35,7 +35,7 @@ coder.decode(buffer); // Date()
 ### But there is messagepack and protocol buffers, right?
 
 Yes, and this project is inspired by messagepack. But Coder is specifically
-designed between comunicating between client- and server-side javascript.
+designed to comunicate between client- and server-side typescript.
 Therefore it only cares about javascript types.
 
 ## Usage
