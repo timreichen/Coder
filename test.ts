@@ -406,7 +406,7 @@ Deno.test({
   name: "Date",
   fn: () => {
     const data = new Date();
-    const expectedByteLength = 9;
+    const expectedByteLength = 10;
 
     const buffer = coder.encode(data);
 
@@ -418,6 +418,30 @@ Deno.test({
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
     const result = coder.decode(buffer);
+    assertEquals(
+      data.getTime(),
+      result.getTime(),
+      `decoded value ${data} is not equal decoded value ${result}`,
+    );
+  },
+});
+Deno.test({
+  name: "Date NaN",
+  fn: () => {
+    const data = new Date(NaN);
+    const expectedByteLength = 2;
+
+    const buffer = coder.encode(data);
+
+    const byteLength = buffer.byteLength;
+
+    assertEquals(
+      byteLength,
+      expectedByteLength,
+      `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
+    );
+    const result = coder.decode(buffer);
+    
     assertEquals(
       data.getTime(),
       result.getTime(),
