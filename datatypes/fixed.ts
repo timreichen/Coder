@@ -7,10 +7,10 @@ export const fixedValueDataType = (value: unknown) =>
     test(data: unknown) {
       return data === value;
     }
-    encode(encoder: Encoder, data: unknown) {
+    encode(_encoder: Encoder, _data: unknown) {
       return new ArrayBuffer(0);
     }
-    decode(decoder: Decoder) {
+    decode(_decoder: Decoder) {
       return value;
     }
   })();
