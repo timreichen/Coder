@@ -1,20 +1,20 @@
 import { Encoder } from "../Encoder.ts";
 import { Decoder } from "../Decoder.ts";
-import { DataType } from "../DataType.ts";
+import { DataType } from "../data_type.ts";
 
-export class RegExpDataType extends DataType {
+export class RegExpDataType implements DataType {
   test(data: unknown) {
     return data instanceof RegExp;
   }
   encode(encoder: Encoder, data: RegExp) {
     const string = data.source;
-    const dataBuffer = encoder.stringToBuffer(string);
+    const dataBuffer = encoder.encodeString(string);
     const length = dataBuffer.byteLength;
-    return encoder.combineBuffers(encoder.uInt16ToBuffer(length), dataBuffer);
+    return encoder.combineBuffers(encoder.encodeUint16(length), dataBuffer);
   }
   decode(decoder: Decoder) {
-    const length = decoder.stepUint16();
-    const string = decoder.stepString(length);
+    const length = decoder.decodeUint16();
+    const string = decoder.decodeString(length);
     return new RegExp(string);
   }
 }

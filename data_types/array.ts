@@ -5,32 +5,35 @@ import {
   UINT_32_MAX_VALUE,
   UINT_8_MAX_VALUE,
 } from "../_util.ts";
-import { DataType } from "../DataType.ts";
+import { DataType } from "../data_type.ts";
 
-export const fixedArrayDataType = (length: number) =>
-  new (class FixedArrayDataType extends DataType {
-    test(data: unknown) {
-      return data instanceof Array && data.length === length;
+export class FixedArrayDataType implements DataType {
+  #length: number;
+  constructor(length: number) {
+    this.#length = length;
+  }
+  test(data: unknown) {
+    return data instanceof Array && data.length === this.#length;
+  }
+  encode(encoder: Encoder, data: Array<unknown>) {
+    return data.reduce(
+      (buffer: ArrayBuffer, item: unknown) =>
+        encoder.combineBuffers(buffer, encoder.encode(item)),
+      new ArrayBuffer(0),
+    );
+  }
+  decode(decoder: Decoder) {
+    const array: unknown[] = [];
+    let len = this.#length;
+    while (len--) {
+      const item = decoder.decodeNext();
+      array.push(item);
     }
-    encode(encoder: Encoder, data: Array<unknown>) {
-      return data.reduce(
-        (buffer: ArrayBuffer, item: unknown) =>
-          encoder.combineBuffers(buffer, encoder.encode(item)),
-        new ArrayBuffer(0),
-      );
-    }
-    decode(decoder: Decoder) {
-      const array: unknown[] = [];
-      let len = length;
-      while (len--) {
-        const item = decoder.next();
-        array.push(item);
-      }
-      return array;
-    }
-  })();
+    return array;
+  }
+}
 
-export class Array8DataType extends DataType {
+export class Array8DataType implements DataType {
   test(data: unknown) {
     return data instanceof Array && data.length <= UINT_8_MAX_VALUE;
   }
@@ -39,20 +42,20 @@ export class Array8DataType extends DataType {
     return data.reduce(
       (buffer: ArrayBuffer, item: unknown) =>
         encoder.combineBuffers(buffer, encoder.encode(item)),
-      encoder.uInt8ToBuffer(length),
+      encoder.encodeUint8(length),
     );
   }
   decode(decoder: Decoder) {
-    let length = decoder.stepUint8();
+    let length = decoder.decodeUint8();
     const array: unknown[] = [];
     while (length--) {
-      const item = decoder.next();
+      const item = decoder.decodeNext();
       array.push(item);
     }
     return array;
   }
 }
-export class Array16DataType extends DataType {
+export class Array16DataType implements DataType {
   test(data: unknown) {
     return data instanceof Array && data.length <= UINT_16_MAX_VALUE;
   }
@@ -61,20 +64,20 @@ export class Array16DataType extends DataType {
     return data.reduce(
       (buffer: ArrayBuffer, item: unknown) =>
         encoder.combineBuffers(buffer, encoder.encode(item)),
-      encoder.uInt16ToBuffer(length),
+      encoder.encodeUint16(length),
     );
   }
   decode(decoder: Decoder) {
-    let length = decoder.stepUint16();
+    let length = decoder.decodeUint16();
     const array: unknown[] = [];
     while (length--) {
-      const item = decoder.next();
+      const item = decoder.decodeNext();
       array.push(item);
     }
     return array;
   }
 }
-export class Array32DataType extends DataType {
+export class Array32DataType implements DataType {
   test(data: unknown) {
     return data instanceof Array && data.length <= UINT_32_MAX_VALUE;
   }
@@ -83,14 +86,14 @@ export class Array32DataType extends DataType {
     return data.reduce(
       (buffer: ArrayBuffer, item: unknown) =>
         encoder.combineBuffers(buffer, encoder.encode(item)),
-      encoder.uInt32ToBuffer(length),
+      encoder.encodeUint32(length),
     );
   }
   decode(decoder: Decoder) {
-    let length = decoder.stepUint32();
+    let length = decoder.decodeUint32();
     const array: unknown[] = [];
     while (length--) {
-      const item = decoder.next();
+      const item = decoder.decodeNext();
       array.push(item);
     }
     return array;

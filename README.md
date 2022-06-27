@@ -14,38 +14,24 @@ can be sent over the network without losing data types.
 
 JSON is great, except it doesn't support a lot of types.
 
-```js
+```ts
 const date = new Date();
 
 const string = JSON.stringify(date); // "2020-02-13T13:16:43.096Z"
-JSON.parse(string); // SyntaxError
+JSON.parse(string); // "2020-02-13T13:16:43.096Z"
 ```
 
-In comparison Coder supports a lot of different types by default so your data
-will have the same type after decoding.
-
-```ts
-import { coder } from "https://deno.land/x/coder/mod.ts";
-
-const date = new Date();
-const buffer = coder.encode(date); // ArrayBuffer
-coder.decode(buffer); // Date()
-```
-
-### But there is messagepack and protocol buffers, right?
-
-Yes, and this project is inspired by messagepack. But Coder is specifically
-designed to comunicate between client- and server-side typescript.
-Therefore it only cares about javascript types.
+Coder supports a lot of different types by default so your data will have the
+same type after decoding.
 
 ## Usage
 
-```typescript
-import { coder } from "https://deno.land/x/coder/mod.ts";
+```ts
+import { decode, encode } from "https://deno.land/x/coder/mod.ts";
 
 const date = new Date();
-const buffer = coder.encode(data);
-coder.decode(buffer); // Date()
+const buffer = encode(date); // ArrayBuffer
+decode(buffer); // Date()
 ```
 
 ## Supported types
@@ -73,7 +59,6 @@ Some possible candidates are:
 
 - [AggregateError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError)
 - [EvalError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError)
-- [InternalError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError)
 - [RangeError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError)
 - [ReferenceError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError)
 - [SyntaxError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError)
@@ -98,55 +83,35 @@ Some possible candidates are:
 
 ### Custom DataType Definition
 
-Coder can easily be extended with custom DataTypes.
+Coder can easily be extended with custom DataTypes. There are 16 slots reserved
+for custom DataTypes: `0xf0`-`0xff`.
 
-Example:
+```ts
+import { Coder, DataType, Decoder, Encoder } from "https://deno.land/x/coder/mod.ts";
 
-#### 1. Define Custom DataType
-
-```typescript
-// SymbolDataType.ts
-import { DataType, Decoder, Encoder } from "https://deno.land/x/coder/mod.ts";
-
-export class SymbolDataType extends DataType {
-  // The test method returns true if data should be decoded for that type
+class SymbolDataType implements DataType {
+  // returns true if data should be decoded for that type
   test(data: unknown) {
     return typeof data === "Symbol";
   },
-  // The encode method transforms the data into a buffer
+  // transforms data into a buffer
   encode(encoder: Encoder, data: Symbol) {
     const description = data.description; // get data to encode
-    const dataBuffer = encoder.stringToBuffer(description); // convert description to buffer
-    const lengthBuffer = encoder.uInt8ToBuffer(dataBuffer.byteLength); // convert length to buffer
+    const dataBuffer = encoder.encodeString(description); // encode description
+    const lengthBuffer = encoder.encodeUint8(dataBuffer.byteLength); // encode description length
     return encoder.combineBuffers(lengthBuffer, dataBuffer); // return combined buffer
   },
-  // The decode method transforms the buffer back to a value
+  // transforms buffer back to a value
   decode(decoder: Decoder) {
-    const length = decoder.stepUint8(); // get length
-    const description = decoder.stepString(length); // get description
-    return Symbol(description); // create Symbol with description
+    const length = decoder.decodeUint8(); // decode length
+    const description = decoder.decodeString(length); // decode description
+    return Symbol(description); // return Symbol with description
   },
 };
-```
 
-#### 2. Set Custom DataType
+const coder = new Coder()
+coder.set(0xf0, new SymbolDataType());
 
-There are 16 slots reserved for custom DataTypes: `0xf0`-`0xff`. Chose a free
-one and set the DataType.
-
-```typescript
-import { coder } from "https://deno.land/x/coder/mod.ts";
-// import custom DataType
-import { SymbolDataType } from "./path/to/SymbolDataType.ts";
-// set custom DataType
-coder.set(0xf0, SymbolDataType);
-```
-
-That's it! Now Symbols will be encoded and decoded.
-
-#### 3. Use Custom DataType
-
-```typescript
 const data = { mySymbol: Symbol("foo") };
 const buffer = coder.encode(data);
 coder.decoder(buffer); // { mySymbol: Symbol(foo) }

@@ -9,47 +9,43 @@ import {
   UINT_8_MAX_VALUE,
   UINT_8_MIN_VALUE,
 } from "../_util.ts";
-import { DataType } from "../DataType.ts";
+import { DataType } from "../data_type.ts";
 
-export class Uint8DataType extends DataType {
+export class Uint8DataType implements DataType {
   test(data: unknown) {
     return typeof data === "number" && Number.isInteger(data) &&
       range(data, UINT_8_MIN_VALUE, UINT_8_MAX_VALUE);
   }
   encode(encoder: Encoder, data: number) {
-    return encoder.uInt8ToBuffer(data);
+    return encoder.encodeUint8(data);
   }
   decode(decoder: Decoder) {
-    return decoder.stepUint8();
+    return decoder.decodeUint8();
   }
 }
 
-export class Uint16DataType extends DataType {
+export class Uint16DataType implements DataType {
   test(data: unknown) {
     return typeof data === "number" && Number.isInteger(data) &&
       range(data, UINT_16_MIN_VALUE, UINT_16_MAX_VALUE);
   }
   encode(encoder: Encoder, data: number) {
-    return encoder.uInt16ToBuffer(data);
+    return encoder.encodeUint16(data);
   }
   decode(decoder: Decoder) {
-    return decoder.stepUint16();
+    return decoder.decodeUint16();
   }
 }
 
-export class Uint32DataType extends DataType {
+export class Uint32DataType implements DataType {
   test(data: unknown) {
     return typeof data === "number" && Number.isInteger(data) &&
       range(data, UINT_32_MIN_VALUE, UINT_32_MAX_VALUE);
   }
   encode(encoder: Encoder, data: number) {
-    return encoder.uInt32ToBuffer(data);
+    return encoder.encodeUint32(data);
   }
   decode(decoder: Decoder) {
-    return decoder.stepUint32();
+    return decoder.decodeUint32();
   }
-} // export class Uint64DataType extends DataType {
-//   test(data: unknown) { return typeof data === "number" && Number.isInteger(data) && range(data, UINT_64_MIN_VALUE, UINT_64_MAX_VALUE) }
-//   encode(encoder: Encoder, data: number) { return encoder.uInt64ToBuffer(data) }
-//   decode(decoder: Decoder) { return decoder.stepUint64() }
-// }
+}

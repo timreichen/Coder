@@ -1,5 +1,5 @@
+import { decode, encode } from "./mod.ts";
 import { assertEquals } from "./test_deps.ts";
-import { coder } from "./mod.ts";
 
 Deno.test({
   name: "null",
@@ -7,14 +7,14 @@ Deno.test({
     const data = null;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -28,14 +28,14 @@ Deno.test({
     const data = undefined;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -49,14 +49,14 @@ Deno.test({
     const data = true;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -70,14 +70,14 @@ Deno.test({
     const data = false;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -91,14 +91,14 @@ Deno.test({
     const data = NaN;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       isNaN(result),
       true,
@@ -112,14 +112,14 @@ Deno.test({
     const data = Infinity;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -133,14 +133,14 @@ Deno.test({
     const data = -Infinity;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -154,14 +154,14 @@ Deno.test({
     const data = -1;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -175,14 +175,14 @@ Deno.test({
     const data = -32;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -196,14 +196,14 @@ Deno.test({
     const data = 0;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -217,14 +217,14 @@ Deno.test({
     const data = 10;
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -238,14 +238,14 @@ Deno.test({
     const data = 65;
     const expectedByteLength = 2;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -259,7 +259,7 @@ Deno.test({
     const data = 256;
     const expectedByteLength = 3;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
 
     const byteLength = buffer.byteLength;
     assertEquals(
@@ -267,7 +267,7 @@ Deno.test({
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -281,14 +281,14 @@ Deno.test({
     const data = 1442511;
     const expectedByteLength = 5;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -302,14 +302,14 @@ Deno.test({
     const data = -128;
     const expectedByteLength = 2;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
 
     assertEquals(
       data,
@@ -324,14 +324,14 @@ Deno.test({
     const data = -4095;
     const expectedByteLength = 3;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -345,14 +345,14 @@ Deno.test({
     const data = -1442511;
     const expectedByteLength = 5;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -366,14 +366,14 @@ Deno.test({
     const data = 14425111231354n;
     const expectedByteLength = 19;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -387,14 +387,14 @@ Deno.test({
     const data = -14425111231354n;
     const expectedByteLength = 20;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -408,7 +408,7 @@ Deno.test({
     const data = new Date();
     const expectedByteLength = 10;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
 
     const byteLength = buffer.byteLength;
 
@@ -417,7 +417,7 @@ Deno.test({
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data.getTime(),
       result.getTime(),
@@ -431,7 +431,7 @@ Deno.test({
     const data = new Date(NaN);
     const expectedByteLength = 2;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
 
     const byteLength = buffer.byteLength;
 
@@ -440,8 +440,8 @@ Deno.test({
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
-    
+    const result = decode(buffer);
+
     assertEquals(
       data.getTime(),
       result.getTime(),
@@ -455,14 +455,14 @@ Deno.test({
     const data = /test[123]/g;
     const expectedByteLength = 12;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data.source,
       result.source,
@@ -476,14 +476,14 @@ Deno.test({
     const data = "a".repeat(21);
     const expectedByteLength = 22;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -497,14 +497,14 @@ Deno.test({
     const data = "a".repeat(125);
     const expectedByteLength = 127;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -518,14 +518,14 @@ Deno.test({
     const data = "a".repeat(4000);
     const expectedByteLength = 4003;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -539,14 +539,14 @@ Deno.test({
     const data = "a".repeat(1442511);
     const expectedByteLength = 1442516;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -560,14 +560,14 @@ Deno.test({
     const data = {};
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -581,14 +581,14 @@ Deno.test({
     const data = { foo: true };
     const expectedByteLength = 6;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -602,14 +602,14 @@ Deno.test({
     const data: unknown[] = [];
     const expectedByteLength = 1;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,
@@ -623,14 +623,14 @@ Deno.test({
     const data = ["foo", true];
     const expectedByteLength = 6;
 
-    const buffer = coder.encode(data);
+    const buffer = encode(data);
     const byteLength = buffer.byteLength;
     assertEquals(
       byteLength,
       expectedByteLength,
       `byteLength ${byteLength} is expected to be ${expectedByteLength}`,
     );
-    const result = coder.decode(buffer);
+    const result = decode(buffer);
     assertEquals(
       data,
       result,

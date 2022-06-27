@@ -5,9 +5,9 @@ import {
   UINT_32_MAX_VALUE,
   UINT_8_MAX_VALUE,
 } from "../_util.ts";
-import { DataType } from "../DataType.ts";
+import { DataType } from "../data_type.ts";
 
-export class Set8DataType extends DataType {
+export class Set8DataType implements DataType {
   test(data: unknown) {
     return data instanceof Set && data.size <= UINT_8_MAX_VALUE;
   }
@@ -16,21 +16,21 @@ export class Set8DataType extends DataType {
     return [...data].reduce(
       (buffer: ArrayBuffer, value: unknown) =>
         encoder.combineBuffers(buffer, encoder.encode(value)),
-      encoder.uInt8ToBuffer(length),
+      encoder.encodeUint8(length),
     );
   }
   decode(decoder: Decoder) {
-    let length = decoder.stepUint8();
+    let length = decoder.decodeUint8();
     const set = new Set();
     while (length--) {
-      const value = decoder.next();
+      const value = decoder.decodeNext();
       set.add(value);
     }
     return set;
   }
 }
 
-export class Set16DataType extends DataType {
+export class Set16DataType implements DataType {
   test(data: unknown) {
     return data instanceof Set && data.size <= UINT_16_MAX_VALUE;
   }
@@ -39,21 +39,21 @@ export class Set16DataType extends DataType {
     return [...data].reduce(
       (buffer: ArrayBuffer, value: unknown) =>
         encoder.combineBuffers(buffer, encoder.encode(value)),
-      encoder.uInt16ToBuffer(length),
+      encoder.encodeUint16(length),
     );
   }
   decode(decoder: Decoder) {
-    let length = decoder.stepUint16();
+    let length = decoder.decodeUint16();
     const set = new Set();
     while (length--) {
-      const value = decoder.next();
+      const value = decoder.decodeNext();
       set.add(value);
     }
     return set;
   }
 }
 
-export class Set32DataType extends DataType {
+export class Set32DataType implements DataType {
   test(data: unknown) {
     return data instanceof Set && data.size <= UINT_32_MAX_VALUE;
   }
@@ -62,14 +62,14 @@ export class Set32DataType extends DataType {
     return [...data].reduce(
       (buffer: ArrayBuffer, value: unknown) =>
         encoder.combineBuffers(buffer, encoder.encode(value)),
-      encoder.uInt32ToBuffer(length),
+      encoder.encodeUint32(length),
     );
   }
   decode(decoder: Decoder) {
-    let length = decoder.stepUint32();
+    let length = decoder.decodeUint32();
     const set = new Set();
     while (length--) {
-      const value = decoder.next();
+      const value = decoder.decodeNext();
       set.add(value);
     }
     return set;
