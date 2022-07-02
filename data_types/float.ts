@@ -1,5 +1,5 @@
-import { Encoder } from "../Encoder.ts";
-import { Decoder } from "../Decoder.ts";
+import { Encoder } from "../encoder.ts";
+import { Decoder } from "../decoder.ts";
 import { range } from "../_util.ts";
 import { DataType } from "../data_type.ts";
 

@@ -1,5 +1,5 @@
-import { Encoder } from "../Encoder.ts";
-import { Decoder } from "../Decoder.ts";
+import { Encoder } from "../encoder.ts";
+import { Decoder } from "../decoder.ts";
 import {
   UINT_16_MAX_VALUE,
   UINT_32_MAX_VALUE,

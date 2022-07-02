@@ -1,5 +1,5 @@
-import { Encoder } from "../Encoder.ts";
-import { Decoder } from "../Decoder.ts";
+import { Encoder } from "../encoder.ts";
+import { Decoder } from "../decoder.ts";
 import {
   INT_16_MIN_VALUE,
   INT_32_MIN_VALUE,

@@ -1,5 +1,5 @@
-import type { Encoder } from "./Encoder.ts";
-import type { Decoder } from "./Decoder.ts";
+import type { Encoder } from "./encoder.ts";
+import type { Decoder } from "./decoder.ts";
 
 export interface DataType {
   test(data: unknown): boolean;

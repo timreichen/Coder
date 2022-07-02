@@ -1,5 +1,5 @@
-import { Encoder } from "./Encoder.ts";
-import { Decoder } from "./Decoder.ts";
+import { Encoder } from "./encoder.ts";
+import { Decoder } from "./decoder.ts";
 import { DataType } from "./data_type.ts";
 import {
   Array16DataType,
@@ -33,13 +33,13 @@ import {
   ArrayBuffer32DataType,
   ArrayBuffer8DataType,
 } from "./data_types/array_buffer.ts";
-import { DateDataType } from "./data_types/Date.ts";
+import { DateDataType } from "./data_types/date.ts";
 import {
   FixedObjectDataType,
   Object16DataType,
   Object32DataType,
   Object8DataType,
-} from "./data_types/Object.ts";
+} from "./data_types/object.ts";
 import {
   Set16DataType,
   Set32DataType,

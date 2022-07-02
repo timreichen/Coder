@@ -1,6 +1,6 @@
 import { DataType } from "../data_type.ts";
-import { Decoder } from "../Decoder.ts";
-import { Encoder } from "../Encoder.ts";
+import { Decoder } from "../decoder.ts";
+import { Encoder } from "../encoder.ts";
 
 export class FixedValueDataType<T = unknown> implements DataType {
   #value: T;
